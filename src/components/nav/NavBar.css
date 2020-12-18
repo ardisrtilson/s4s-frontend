@@ -1,0 +1,17 @@
+.navbar {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: left;
+    background-color: #BC7493;
+}
+
+.navbar__item {
+    flex-basis: 20%;
+    list-style-type: none;
+    width: calc(100% / 5);
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: white solid 1px;
+}

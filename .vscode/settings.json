@@ -1,0 +1,28 @@
+{
+  "files.exclude": {
+    ".firebase": true,
+    ".vscode": true,
+    "functions": true,
+    "node_modules": true,
+    "public": true,
+    "storage.rules": true,
+    "README.md": true,
+    "package.json": true,
+    "package-lock.json": true,
+    "firestore.rules": true,
+    "firestore.indexes.json": true,
+    "firebase.json": true,
+    "database.rules.json": true,
+    "(firebase.rules)": true,
+    ".gitignore": true,
+    ".firebaserc": true,
+    "y": true,
+    "src/setupTests.js": true,
+    "src/serviceWorker.js": true,
+    "src/logo.svg": true,
+    "src/App.test.js": true,
+    "src/App.js": true,
+    "src/App.css": true,
+    "PossibleVisualizerTools": true
+  }
+}
