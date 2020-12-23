@@ -5,7 +5,6 @@ export const Register = (props) => {
     const username = useRef()
     const firstName = useRef()
     const lastName = useRef()
-    const email = useRef()
     const password = useRef()
     const verifyPassword = useRef()
     const passwordDialog = useRef()
@@ -28,19 +27,15 @@ export const Register = (props) => {
                         },
                         body: JSON.stringify({
                             username: username.current.value,
-                            email: email.current.value,
                             password: password.current.value,
-                            firstName: firstName.current.value,
-                            lastName: lastName.current.value
+                            first_name: firstName.current.value,
+                            last_name: lastName.current.value,
+                            sex_id: 1
                         })
                     })
                         .then(_ => _.json())
-                        .then(createdUser => {
-                            if (createdUser.hasOwnProperty("id")) {
-                                localStorage.setItem("customer", createdUser.id)
-                                props.history.push("/")
-                            }
-                        })
+                        .then(
+                                props.history.push("/login"))
         } else {
             passwordDialog.current.showModal()
         }
@@ -77,14 +72,6 @@ export const Register = (props) => {
                         name="lastName"
                         className="form-control"
                         placeholder="Last name"
-                        required />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="inputEmail"> Email address </label>
-                    <input ref={email} type="email"
-                        name="email"
-                        className="form-control"
-                        placeholder="Email address"
                         required />
                 </fieldset>
                 <fieldset>

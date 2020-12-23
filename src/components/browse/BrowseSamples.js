@@ -9,7 +9,7 @@ export const BrowseSamples = (props) => {
 
     // Context
     const {favorites,  
-        getCustomers,
+        getUsers,
         getFavorites,
         getSamples,
         samples, 
@@ -23,7 +23,7 @@ export const BrowseSamples = (props) => {
 
     useEffect(() => {
         getSamples()
-        getCustomers()
+        getUsers()
         getFavorites()
         let currentlyFiltered = samples
                 const notUser = currentlyFiltered.filter(byUser => byUser.customerId != parseInt(localStorage.customer))

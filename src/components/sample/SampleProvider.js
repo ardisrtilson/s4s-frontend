@@ -4,7 +4,7 @@ export const SampleContext = React.createContext()
 
 export const SampleProvider = (props) => {
     const [commentValue, setComments] = useState([])
-    const [customers, setCustomers] = useState([])
+    const [users, setUsers] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
     const [ratingValue, setRating] = useState([])
@@ -12,7 +12,7 @@ export const SampleProvider = (props) => {
     const [searchTerms, setTerms] = useState("")
 
     const addComment = comment => {
-        return fetch("http://localhost:8088/comments", {
+        return fetch("http://localhost:8000/comments", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -21,21 +21,24 @@ export const SampleProvider = (props) => {
         })
             .then(getSamples)
     }
-    const addFavorites = sample => {
-        return fetch("http://localhost:8088/userFavorites", {
+    const addFavorites = favorite => {
+        return fetch("http://localhost:8000/userFavorites", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
             },
-            body: JSON.stringify(sample)
+            body: JSON.stringify(favorite)
         })
             .then(getFavorites)
     }
+
     const addSample = sample => {
-        return fetch("http://localhost:8088/samples", {
+        return fetch("http://localhost:8000/samples", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
             },
             body: JSON.stringify(sample)
         })
@@ -46,43 +49,67 @@ export const SampleProvider = (props) => {
             .then(res => res.json())
             .then(setComments)
     }
-    const getCustomers = () => {
-        return fetch("http://localhost:8088/customers")
+    const getUsers = () => {
+        return fetch("http://localhost:8000/users", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
-            .then(setCustomers)
+            .then(setUsers)
     }
     const getFavorites = () => {
-        return fetch("http://localhost:8088/userFavorites")
+        return fetch("http://localhost:8000/userFavorites", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
             .then(setFavorites)
     }
     const getSamples = () => {
-        return fetch("http://localhost:8088/samples")
+        return fetch("http://localhost:8000/samples", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
             .then(setSamples)
     }
+
     const getSampleById = (id) => {
-        return fetch(`http://localhost:8088/samples/${id}`)
+        return fetch(`http://localhost:8000/samples/${id}`, {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
+            .then(setSamples)
     }
+    
     const releaseComment = (commentId) => {
         return fetch(`http://localhost:8088/comments/${commentId}`, {
             method: "DELETE"
         })
             .then(getComments)
     }
-    const releaseFavorite = (favoriteId) => {
-        return fetch(`http://localhost:8088/userFavorites/${favoriteId}`, {
-            method: "DELETE"
+    const releaseFavorite = (sampleId) => {
+        return fetch(`http://localhost:8000/userFavorites/${sampleId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
         })
             .then(getFavorites)
     }
     const releaseSample = (sampleId) => {
-        return fetch(`http://localhost:8088/samples/${sampleId}`, {
-            method: "DELETE"
+        return fetch(`http://localhost:8000/userFavorites/${sampleId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
         })
             .then(getSamples)
     }
+
     const updateSample = sample => {
         return fetch(`http://localhost:8088/samples/${sample.id}`, {
             method: "PUT",
@@ -101,11 +128,11 @@ export const SampleProvider = (props) => {
                 addFavorites,
                 addSample,
                 commentValue,
-                customers,
+                users,
                 favorites, 
                 filterValue, 
                 getComments,
-                getCustomers,
+                getUsers,
                 getFavorites,
                 getSamples, 
                 getSampleById,

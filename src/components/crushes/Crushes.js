@@ -11,12 +11,11 @@ export const Crushes = (props) => {
 
     const {favorites, 
         filterValue, 
-        getCustomers,
         getFavorites,
+        getUsers,
         getSamples,
         samples, 
         searchTerms,
-        setFilter,
     } = useContext(SampleContext)
 
     // State
@@ -27,21 +26,17 @@ export const Crushes = (props) => {
 
     useEffect(() => {
         getSamples()
-        getCustomers()
+        getUsers()
         getFavorites()
     }, [])
 
     useEffect(() => {
-        let samplesToDisplay = samples
         let currentlyFiltered = samples
-
-                const notUser = currentlyFiltered.filter(byUser => byUser.customerId != parseInt(localStorage.customer))
-                const userFaves = favorites.filter(faves => faves.customerId === parseInt(localStorage.customer))
-                const randInt = Math.floor(Math.random() * userFaves.length + 1);
-                samplesToDisplay = notUser.filter(currentSamples => 
+                const notUser = currentlyFiltered.filter(byUser => byUser.uploader != parseInt(localStorage.user_number))
+                const userFaves = favorites.filter(faves => faves.user_id === parseInt(localStorage.user_number))
+                let samplesToDisplay = notUser.filter(currentSamples => 
                     {return userFaves.some(favorite => 
-                        favorite.sampleId === currentSamples.id)})
-   
+                        favorite.sample_id === parseInt(currentSamples.id))})
     setFiltered(samplesToDisplay)
     }, [searchTerms, samples, filterValue])
 

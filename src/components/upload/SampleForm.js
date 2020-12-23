@@ -36,24 +36,22 @@ export const SampleForm = (props) => {
                 getURL().then(() => {
                     addSample({
                         name: name.current.value,
-                        description: description.current.value,
-                        user_id: localStorage.getItem("user_number"),
-                        avgRating: "",
-                        loudness: 0,
-                        color: 0,
+                        rating: "0",
+                        loudness: "0",
+                        color: "0",
                         audio_url: url,
                         date_added: "2020-7-7"
                     })
                     thingsRef.add({
                         name: name.current.value,
-                        description: description.current.value,
-                        user_id: localStorage.getItem("user_number"),
-                        avgRating: "",
-                        loudness: 0,
-                        color: 0,
+                        uploader: localStorage.getItem("user_number"),
+                        rating: "0",
+                        loudness: "0",
+                        color: "0",
                         audio_url: url,
                         date_added: "2020-7-7"
                     })
+
                     .then(() => props.history.push("/"))
                 })
             })

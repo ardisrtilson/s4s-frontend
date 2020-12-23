@@ -5,21 +5,20 @@ import "./Samples.css"
 import AudioPlayer from 'react-h5-audio-player';
 
 export const CrushPanel = ({sample}) => {
-  const { customers, addFavorites, favorites, releaseFavorite, getFavorites} = useContext(SampleContext)
-  const currentUser = parseInt(localStorage.getItem("customer"))
-  let thisUserFavorites = favorites.filter(faves => faves.customerId === currentUser)
+  const {addFavorites, favorites, releaseFavorite, getFavorites} = useContext(SampleContext)
+  const currentUser = parseInt(localStorage.getItem("user_id"))
+  let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)
   let foundFave = thisUserFavorites.find(fave => fave.sampleId === sample.id)
   if (foundFave === undefined) {foundFave= false}
   let isFavorite = foundFave.customerId === currentUser
-  const customerName = customers.find(customer => customer.id === sample.customerId) || {}
 
         const downloadFile = () => {
           window.location.href = sample.url
         }
         const addSampleToFavorites = () => {
           addFavorites({
-            customerId: parseInt(localStorage.getItem("customer")),
-            sampleId: sample.id
+            user: parseInt(localStorage.getItem("user_number")),
+            sample: sample.id
         })
         }
         const removeFavorite = () => {

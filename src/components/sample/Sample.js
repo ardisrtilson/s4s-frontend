@@ -1,25 +1,31 @@
 import { SampleContext } from "./SampleProvider"
 import { Link } from "react-router-dom"
-import React, {useContext, useState} from "react"
+import React, {useContext, useState, useEffect} from "react"
 import "./Samples.css"
 import AudioPlayer from 'react-h5-audio-player'
 
 export const Sample = ({sample}) => {
-  const { customers, addFavorites, favorites, releaseFavorite, getFavorites} = useContext(SampleContext)
-  const currentUser = parseInt(localStorage.getItem("customer"))
-  let thisUserFavorites = favorites.filter(faves => faves.customerId === currentUser)
-  let foundFave = thisUserFavorites.find(fave => fave.sampleId === sample.id)
+  
+  useEffect(() => {
+    getSamples()
+    getFavorites()
+  }, [])
+
+  const { users, addFavorites, favorites, releaseFavorite, getFavorites, getSamples} = useContext(SampleContext)
+  const currentUser = parseInt(localStorage.getItem("user_number"))
+  let thisUserFavorites = favorites.filter(faves => faves.user_id === parseInt(currentUser))
+  let foundFave = thisUserFavorites.find(fave => fave.sample_id === sample.id)
   if (foundFave === undefined) {foundFave= false}
-  let isFavorite = foundFave.customerId === currentUser
-  const customerName = customers.find(customer => customer.id === sample.customerId) || {}
+  let isFavorite = foundFave.user_id === currentUser
+  const userName = users.find(customer => customer.id === sample.customerId) || {}
 
         const downloadFile = () => {
           window.location.href = sample.url
         }
         const addSampleToFavorites = () => {
           addFavorites({
-            customerId: parseInt(localStorage.getItem("customer")),
-            sampleId: sample.id
+            user: parseInt(localStorage.getItem("user_number")),
+            sample: sample.id
         })
         }
         const removeFavorite = () => {
@@ -33,7 +39,7 @@ return (
   <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
         <AudioPlayer 
             preload
-            src={sample.url}
+            src={sample.audio_url}
             onPlay={e => console.log("onPlay")}/>
         <button class="button5" onClick={removeFavorite}>Remove Favorite</button>
         <button class="button3" onClick={downloadFile}>Download Sample</button>
@@ -47,7 +53,7 @@ return (
   <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
         <AudioPlayer 
             preload
-            src={sample.url}
+            src={sample.audio_url}
             onPlay={e => console.log("onPlay")}/>
         <button class="button2" onClick={addSampleToFavorites}>Add Favorite</button>
         <button class="button3" onClick={downloadFile}>Download Sample</button>
