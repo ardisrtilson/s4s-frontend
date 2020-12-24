@@ -4,6 +4,9 @@ import { SampleContext } from "../sample/SampleProvider"
 import { CrushPanel } from "./CrushPanel"
 import "./Samples.css"
 import 'react-h5-audio-player/lib/styles.css'
+import { Link } from "react-router-dom"
+import AudioPlayer from 'react-h5-audio-player';
+
 
 export const Crushes = (props) => {
 
@@ -31,13 +34,7 @@ export const Crushes = (props) => {
     }, [])
 
     useEffect(() => {
-        let currentlyFiltered = samples
-                const notUser = currentlyFiltered.filter(byUser => byUser.uploader != parseInt(localStorage.user_number))
-                const userFaves = favorites.filter(faves => faves.user_id === parseInt(localStorage.user_number))
-                let samplesToDisplay = notUser.filter(currentSamples => 
-                    {return userFaves.some(favorite => 
-                        favorite.sample_id === parseInt(currentSamples.id))})
-    setFiltered(samplesToDisplay)
+    setFiltered(samples)
     }, [searchTerms, samples, filterValue])
 
     // JSX

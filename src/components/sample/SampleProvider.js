@@ -5,6 +5,7 @@ export const SampleContext = React.createContext()
 export const SampleProvider = (props) => {
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
+    const [randomSample, setRandomSample] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
     const [ratingValue, setRating] = useState([])
@@ -57,6 +58,16 @@ export const SampleProvider = (props) => {
             .then(res => res.json())
             .then(setUsers)
     }
+
+    const getRandomSample = () => {
+        return fetch("http://localhost:8000/randomSample", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
+            .then(res => res.json())
+            .then(setRandomSample)
+    }
+
     const getFavorites = () => {
         return fetch("http://localhost:8000/userFavorites", {
             headers:{
@@ -136,6 +147,8 @@ export const SampleProvider = (props) => {
                 getFavorites,
                 getSamples, 
                 getSampleById,
+                getRandomSample,
+                randomSample,
                 releaseSample, 
                 ratingValue,
                 releaseComment,

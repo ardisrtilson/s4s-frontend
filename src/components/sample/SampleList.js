@@ -28,11 +28,9 @@ export const SampleList = (props) => {
     useEffect(() => {
         let samplesToDisplay = samples
         let currentlyFiltered = samples
-        console.log(samples)
 
             if (props.history.location.pathname === "/"){
             samplesToDisplay = currentlyFiltered.filter(byUser => byUser.uploader === parseInt(localStorage.user_number))
-            console.log(currentlyFiltered)
             currentlyFiltered = samplesToDisplay
             }
 

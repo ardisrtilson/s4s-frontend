@@ -22,41 +22,15 @@ export const Sample = ({sample}) => {
         const downloadFile = () => {
           window.location.href = sample.url
         }
-        const addSampleToFavorites = () => {
-          addFavorites({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: sample.id
-        })
-        }
-        const removeFavorite = () => {
-          releaseFavorite(foundFave.id).then(getFavorites)
-        }
-
-if (isFavorite){
 return (
 <>
 <section class="sampleCard">
   <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
         <AudioPlayer 
-            preload
+            preload="true"
             src={sample.audio_url}
             onPlay={e => console.log("onPlay")}/>
-        <button class="button5" onClick={removeFavorite}>Remove Favorite</button>
         <button class="button3" onClick={downloadFile}>Download Sample</button>
 </section>
 </>
 )}
-
-else{
-return (
-<section class="sampleCard">
-  <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
-        <AudioPlayer 
-            preload
-            src={sample.audio_url}
-            onPlay={e => console.log("onPlay")}/>
-        <button class="button2" onClick={addSampleToFavorites}>Add Favorite</button>
-        <button class="button3" onClick={downloadFile}>Download Sample</button>
-</section>
-  )}
-}
