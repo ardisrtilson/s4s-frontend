@@ -17,7 +17,7 @@ export const Crushes = (props) => {
         getFavorites,
         getUsers,
         getSamples,
-        samples, 
+        samples,
         searchTerms,
     } = useContext(SampleContext)
 

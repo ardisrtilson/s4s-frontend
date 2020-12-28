@@ -20,8 +20,9 @@ export const Sample = ({sample}) => {
   const userName = users.find(customer => customer.id === sample.customerId) || {}
 
         const downloadFile = () => {
-          window.location.href = sample.url
+          window.location.href = sample.audio_url
         }
+
 return (
 <>
 <section class="sampleCard">

@@ -5,12 +5,8 @@ import "./Samples.css"
 import AudioPlayer from 'react-h5-audio-player';
 
 export const CrushPanel = ({sample}) => {
-  useEffect(() => {
-    getSamples()
-    getFavorites()
-  }, [])
 
-  const {addFavorites, favorites, releaseFavorite, getFavorites, getSamples} = useContext(SampleContext)
+  const {favorites, releaseFavorite, getFavorites} = useContext(SampleContext)
 
   const currentUser = parseInt(localStorage.getItem("user_number"))
   let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)

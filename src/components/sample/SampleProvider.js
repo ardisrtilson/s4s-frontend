@@ -10,7 +10,9 @@ export const SampleProvider = (props) => {
     const [filterValue, setFilter] = useState([])
     const [ratingValue, setRating] = useState([])
     const [samples, setSamples] = useState([])
+    const [skipped, setSkipped] = useState([])
     const [searchTerms, setTerms] = useState("")
+    const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
 
     const addComment = comment => {
         return fetch("http://localhost:8000/comments", {
@@ -32,6 +34,18 @@ export const SampleProvider = (props) => {
             body: JSON.stringify(favorite)
         })
             .then(getFavorites)
+    }
+
+    const addSkipped = skipped => {
+        return fetch("http://localhost:8000/userSkipped", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
+            body: JSON.stringify(skipped)
+        })
+            .then(getSkipped)
     }
 
     const addSample = sample => {
@@ -65,7 +79,19 @@ export const SampleProvider = (props) => {
                 "Authorization": `Token ${localStorage.getItem("user_id")}`
             }})
             .then(res => res.json())
-            .then(setRandomSample)
+            .then((data) => {
+                setRandomSample(data)
+                setRandomSamplesLoaded(true)
+            })
+    }
+
+    const getSkipped = () => {
+        return fetch("http://localhost:8000/userSkipped", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
+            .then(res => res.json())
+            .then(setSkipped)
     }
 
     const getFavorites = () => {
@@ -138,6 +164,7 @@ export const SampleProvider = (props) => {
                 addComment,
                 addFavorites,
                 addSample,
+                addSkipped,
                 commentValue,
                 users,
                 favorites, 
@@ -154,11 +181,15 @@ export const SampleProvider = (props) => {
                 releaseComment,
                 releaseFavorite,
                 samples,
+                skipped,
+                getSkipped,
+                setSkipped,
                 searchTerms,
                 setComments,
                 setFavorites, 
                 setFilter,
                 setRating,
+                randomSamplesLoaded,
                 setTerms,
                 updateSample,
             }}>

@@ -8,6 +8,7 @@ import { SampleDetails} from "./sample/SampleDetail"
 import { SampleSearch } from "./sample/SampleSearch"
 import { Crushes } from "./crushes/Crushes"
 import {BrowseSamples} from "./browse/BrowseSamples"
+import {Browse} from "./browse/Browse"
 import "./sample/Samples.css"
 
 export const ApplicationViews = (props) => {

@@ -4,46 +4,40 @@ import "./Samples.css"
 
 export const SampleDetails = (props) => {
 
-    // Declarations 
-
-    const customerName = customers.find(customer => customer.id === sample.customerId) || {}
-    const theseComments = commentValue.filter(comment => sample.id === comment.sampleId)
-    const userComment = useRef(null)
-    const isUser = sample.customerId === parseInt(localStorage.getItem("customer"))
-    const foundUser = customers.find(customer => customer.id === parseInt(localStorage.getItem("customer"))) || {}
-    const currentUserName = foundUser.name
-
-    // Context
+    const [sample, setSample] = useState({})
 
     const {
         addComment,
         commentValue,
-        customers, 
+        getUsers,
+        users,
         getComments,
-        getCustomers,
         getSampleById,
         releaseComment,
         releaseSample
         } = useContext(SampleContext)
-
-    // State
-
-    const [sample, setSample] = useState({})
-
-    // Hooks
+    // Declarations 
 
     useEffect(() => {
-        getCustomers()
         getComments()
+        getUsers()
         const sampleId = parseInt(props.match.params.sampleId)
         getSampleById(sampleId)
             .then(setSample)
     }, [])
 
+    const user = users.find(user => user.id === sample.user) || {}
+    const theseComments = commentValue.filter(comment => sample.id === comment.sampleId)
+    const userComment = useRef(null)
+    const isUser = sample.user_id === parseInt(localStorage.getItem("user_number"))
+    const foundUser = users.find(user => user.id === parseInt(localStorage.getItem("user_number"))) || {}
+    const currentUserName = foundUser.name
+
+
     // Functions
 
         const addCommentToApi = () => {
-            let commenterName = customers.find(customer => customer.id === parseInt(localStorage.getItem("customer")))
+            let commenterName = users.find(user => user.id === parseInt(localStorage.getItem("user_number")))
             addComment({
                 sampleId: sample.id,
                 userId: commenterName.name,
@@ -52,12 +46,10 @@ export const SampleDetails = (props) => {
             userComment.current.value = ""
         }
 
-    // JSX
-
         if (isUser === true){
         return (
                 <section className="sample">
-                    <h3 className="sample__name">{sample.name} by {customerName.name}<button onClick={() => releaseSample(sample.id).then(() => props.history.push("/browse"))} >Delete Sample</button></h3>
+                    <h3 className="sample__name">{sample.name} by {user.name}<button onClick={() => releaseSample(sample.id).then(() => props.history.push("/browse"))} >Delete Sample</button></h3>
                     <div className="sample__description"><h3>Description:</h3>{sample.description}</div>
                     <div className="sample__submitter"> <h3>Comments:</h3>{
                         theseComments.map(comment => {
@@ -94,7 +86,7 @@ export const SampleDetails = (props) => {
         else{
             return (
                 <section className="sample">
-                    <h3 className="sample__name">{sample.name} by {customerName.name}</h3>
+                    <h3 className="sample__name">{sample.name} by {user.name}</h3>
                     <div className="sample__description">{sample.description}</div>
                     <div className="sample__submitter"> <h3>Comments:</h3>{
                         theseComments.map(comment => {
