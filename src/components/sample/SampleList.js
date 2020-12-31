@@ -8,11 +8,9 @@ export const SampleList = (props) => {
 
     // Context
 
-    const {favorites, 
-        filterValue, 
+    const { 
         getSamples,
         samples, 
-        searchTerms,
         getUsers,
         user,
         getUserById,

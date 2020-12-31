@@ -5,6 +5,7 @@ export const SampleContext = React.createContext()
 export const SampleProvider = (props) => {
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
+    const [ratings, setRatings] = useState([])
     const [randomSample, setRandomSample] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
@@ -58,6 +59,27 @@ export const SampleProvider = (props) => {
             .then(getSkipped)
     }
 
+    const addRatings = rating => {
+        return fetch("http://localhost:8000/sampleRatings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
+            body: JSON.stringify(rating)
+        })
+            .then(getRatings)
+    }
+
+    const getRatings = () => {
+        return fetch("http://localhost:8000/sampleRatings", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
+            .then(res => res.json())
+            .then(setRatings)
+    }
+
     const addSample = sample => {
         return fetch("http://localhost:8000/samples", {
             method: "POST",
@@ -70,7 +92,10 @@ export const SampleProvider = (props) => {
             .then(getSamples)
     }
     const getComments = () => {
-        return fetch("http://localhost:8088/comments")
+        return fetch("http://localhost:8000/comments", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
             .then(setComments)
     }
@@ -178,7 +203,10 @@ export const SampleProvider = (props) => {
                 commentValue,
                 users,
                 favorites, 
-                filterValue, 
+                filterValue,
+                ratings,
+                getRatings,
+                addRatings,
                 getComments,
                 getUsers,
                 getFavorites,

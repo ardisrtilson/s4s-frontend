@@ -23,10 +23,9 @@ export const SampleDetails = (props) => {
         getUsers()
         const sampleId = parseInt(props.match.params.sampleId)
         getSampleById(sampleId)
-            .then(setSample)
     }, [])
 
-    const user = users.find(user => user.id === sample.user) || {}
+    const user = users.find(user => user.id === sample.uploader) || {}
     const theseComments = commentValue.filter(comment => sample.id === comment.sampleId)
     const userComment = useRef(null)
     const isUser = sample.user_id === parseInt(localStorage.getItem("user_number"))

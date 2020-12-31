@@ -6,10 +6,11 @@ import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
 import "./Browse.css"
 import 'react-h5-audio-player/lib/styles.css'
-import { ColorPicker } from 'material-ui-color';
 export const Rate = (props) => {
 
     const [rSampleItem, setRSampleValue] = useState(0)
+    const [value, setValue] = useState(null)
+    const [volume, setVolume] = useState(null)
     const [currentSample, setCurrentSample] = useState({})
     const [noneLeft, setNoneLeft] = useState(false)
     const [zeroed, setZeroed] = useState(false)
@@ -21,7 +22,7 @@ export const Rate = (props) => {
         randomSample,
         addFavorites,
         skipped,
-        addSkipped,
+        addRatings,
         getSkipped,
         randomSamplesLoaded,
     } = useContext(SampleContext)
@@ -34,16 +35,8 @@ export const Rate = (props) => {
         }
     }
 
-    const addSampleToFavorites = () => {
-        addFavorites({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: currentSample.id
-        })
-    }
-
-    const addSampleToSkipped = () => {
-        addSkipped({
-            user: parseInt(localStorage.getItem("user_number")),
+    const addSampleRatings = () => {
+        addRatings({
             sample: currentSample.id
         })
     }
@@ -57,6 +50,11 @@ export const Rate = (props) => {
         setCurrentSample(itemsLeftToShow[rSampleItem])
         }
     }, [rSampleItem, zeroed])
+
+    useEffect(() => {
+        console.log(value)
+        console.log(volume)
+    }, [value, volume])
 
     useEffect(() => {
     if (randomSamplesLoaded && itemsLeftToShow.length > 0){
@@ -100,30 +98,17 @@ export const Rate = (props) => {
             <div class="sampleCard">
             <img class="img" src={currentSample.sample_image}></img>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
-                <ColorPicker 
-                defaultValue="transparent"
-/>
+                <Rating 
+                value={value}
+                onChange={(event, newValue) => {setValue(newValue)}}/>
+                
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
                     onPlay={e => console.log("onPlay")}
-                    onVolumeChange={e => console.log(e.target.volume)} />
-            </div>
-
-            <div class="sampleCard">
-            Drag the volume slider til the sound is just right.
-            </div>
-
-            <div class="sampleCard">
-            What color is this sound?
-            </div>
-
-            <div class="sampleCard">
-            What shape is this sound?
-            </div>
-
-            <div class="sampleCard">
-            <Rating />
+                    onVolumeChange={e => setVolume(e.target.volume)} />
+                    <button class="button5" onClick={addSampleRatings}>Submit Ratings</button>
+                    <button class="button2" onClick={getFavorites}>Skip</button>
             </div>
             </>
         )
