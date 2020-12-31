@@ -2,6 +2,13 @@
     margin: 0 5rem;
 }
 
+.img {
+  float: left;
+  width:  100px;
+  height: 100px;
+  background-size: cover;
+}
+
 .button1 {
     display: block; text-align: 
     center; background: #FFF7D6; 

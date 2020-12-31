@@ -13,58 +13,30 @@ export const SampleList = (props) => {
         getSamples,
         samples, 
         searchTerms,
+        getUsers,
+        user,
+        getUserById,
     } = useContext(SampleContext)
 
-    // State
-
-    const [ filteredSamples, setFiltered ] = useState([])
-
     // Hooks
+    let currentUser = parseInt(localStorage.getItem("user_number"))
 
     useEffect(() => {
         getSamples()
+        getUsers()
+        getUserById(currentUser)
     }, [])
-    
-    useEffect(() => {
-        let samplesToDisplay = samples
-        let currentlyFiltered = samples
-
-            if (props.history.location.pathname === "/"){
-            samplesToDisplay = currentlyFiltered.filter(byUser => byUser.uploader === parseInt(localStorage.user_number))
-            currentlyFiltered = samplesToDisplay
-            }
-
-            if (props.history.location.pathname === "/browse"){
-                const notUser = currentlyFiltered.filter(byUser => byUser.customerId != parseInt(localStorage.customer))
-                samplesToDisplay = notUser
-                currentlyFiltered = samplesToDisplay
-                }
-
-            if (searchTerms !== "") {
-                samplesToDisplay = currentlyFiltered.filter(sample => sample.name.toLowerCase().includes(searchTerms))
-                currentlyFiltered = samplesToDisplay
-            }
-
-            if (filterValue === "2" && props.history.location.pathname === "/browse"){
-                const notUser = currentlyFiltered.filter(byUser => byUser.customerId != parseInt(localStorage.customer))
-                const userFaves = favorites.filter(faves => faves.customerId === parseInt(localStorage.customer))
-                samplesToDisplay = notUser.filter(currentSamples => 
-                    {return userFaves.some(favorite => 
-                        favorite.sampleId === currentSamples.id)})
-            }
-   
-    setFiltered(samplesToDisplay)
-    }, [searchTerms, samples, filterValue])
 
     // JSX
 
         return (
             <>
+            <img class="img" src={user.profile_image}></img>
             <div className="samples">
                 <div class="sampleCard">
                         </div> 
                 {
-                    filteredSamples.map(sample => {
+                    samples.map(sample => {
                         return <Sample key={sample.id} sample={sample} />
                     })
                 }

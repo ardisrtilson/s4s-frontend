@@ -25,6 +25,7 @@ export const Sample = ({sample}) => {
 
 return (
 <>
+<img class="img" src={sample.sample_image}></img>
 <section class="sampleCard">
   <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
         <AudioPlayer 

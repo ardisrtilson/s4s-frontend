@@ -26,6 +26,7 @@ if (isFavorite){
 return (
 <>
 <section class="sampleCard">
+<img class="img" src={sample.sample_image}></img>
   <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
         <AudioPlayer 
             preload="true"

@@ -34,6 +34,20 @@ export const BrowseSamples = (props) => {
         }
     }
 
+    const addSampleToFavorites = () => {
+        addFavorites({
+            user: parseInt(localStorage.getItem("user_number")),
+            sample: currentSample.id
+        })
+    }
+
+    const addSampleToSkipped = () => {
+        addSkipped({
+            user: parseInt(localStorage.getItem("user_number")),
+            sample: currentSample.id
+        })
+    }
+    
     useEffect(() => {
         getUsers().then(getSkipped).then(getFavorites).then(getRandomSample)
     }, [])
@@ -65,7 +79,6 @@ export const BrowseSamples = (props) => {
     }
     }, [itemsLeftToShow, randomSample, randomSamplesLoaded])
 
-
     useEffect(() => {
 
         //Filtration
@@ -73,7 +86,6 @@ export const BrowseSamples = (props) => {
         let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)
         let thisUserSkipped = skipped.filter(skip => skip.user_id === currentUser)
         if (randomSample.length > 0) {
-            debugger
             let randomSamplesThatHaveNotBeenFavorited = randomSample.filter(comparer(thisUserFavorites))
             let randomSamplesThatHaveNotBeenSkippedOrFavorited = randomSamplesThatHaveNotBeenFavorited.filter(comparer(thisUserSkipped))
             console.log(randomSamplesThatHaveNotBeenSkippedOrFavorited)
@@ -82,24 +94,11 @@ export const BrowseSamples = (props) => {
         }
     }, [favorites, skipped, randomSample])
 
-    const addSampleToFavorites = () => {
-        addFavorites({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: currentSample.id
-        })
-    }
-
-    const addSampleToSkipped = () => {
-        addSkipped({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: currentSample.id
-        })
-    }
-
     if (noneLeft !== true) {
         return (
             <div class="sampleCard">
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
+                <img class="img" src={currentSample.sample_image}></img>
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
@@ -117,4 +116,5 @@ export const BrowseSamples = (props) => {
             </div>
         )
     }
+
 }

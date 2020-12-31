@@ -1,5 +1,5 @@
 // Organized
-import React, { useContext, useRef} from "react"
+import React, { useContext, useRef, useState} from "react"
 import { SampleContext } from "../sample/SampleProvider"
 import "./Upload.css"
 import firebase from 'firebase'
@@ -17,7 +17,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 export const SampleForm = (props) => {
-
+    const [ postImage, setPostImage ] = useState("")
     let file
     let db = firebase.firestore();
     let thingsRef = db.collection('Samples')
@@ -26,6 +26,19 @@ export const SampleForm = (props) => {
     const { addSample } = useContext(SampleContext)
     const name = useRef(null)
     const description = useRef(null)
+
+    const getBase64 = (file, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(file);
+    }
+    
+    const createPostImageJSON = (event) => {
+        
+        getBase64(event.target.files[0], (base64ImageString) => {
+            setPostImage({'sample_image':base64ImageString})
+        });
+    }
 
     const constructNewSample = () => {
         let fileRef = firebase.storage().ref("Audio/" + file.name)    
@@ -40,7 +53,8 @@ export const SampleForm = (props) => {
                         loudness: "0",
                         color: "0",
                         audio_url: url,
-                        date_added: "2020-7-7"
+                        date_added: "2020-7-7", 
+                        sample_image: postImage.sample_image
                     })
                     thingsRef.add({
                         name: name.current.value,
@@ -49,7 +63,8 @@ export const SampleForm = (props) => {
                         loudness: "0",
                         color: "0",
                         audio_url: url,
-                        date_added: "2020-7-7"
+                        date_added: "2020-7-7",
+                        sample_image: postImage.sample_image
                     })
 
                     .then(() => props.history.push("/"))
@@ -68,6 +83,9 @@ export const SampleForm = (props) => {
                     <label htmlFor="sampleName"><h3>Description:</h3> </label>
                     <input type="text" id="sampleDescription" ref={description} required autoFocus className="form-control" placeholder="Enter Description Here" />
                 </div>
+                <div className="uploadButtons">
+                            <input type="file" id="post_image" onChange={(evt) => {createPostImageJSON(evt)}} />
+                        </div>
                 <div className="upload-group">
             <input class="button3" type="file" id="fileButton" 
                 onChange={evt => {

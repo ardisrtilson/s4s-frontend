@@ -12,7 +12,17 @@ export const SampleProvider = (props) => {
     const [samples, setSamples] = useState([])
     const [skipped, setSkipped] = useState([])
     const [searchTerms, setTerms] = useState("")
+    const [user, setUser] = useState("")
     const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
+
+    const getUserById = (id) => {
+        return fetch(`http://localhost:8000/users/${id}`, {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
+            .then(res => res.json())
+            .then(setUser)
+    }
 
     const addComment = comment => {
         return fetch("http://localhost:8000/comments", {
@@ -192,6 +202,9 @@ export const SampleProvider = (props) => {
                 randomSamplesLoaded,
                 setTerms,
                 updateSample,
+                user,
+                setUser,
+                getUserById,
             }}>
         {props.children}
         </SampleContext.Provider>

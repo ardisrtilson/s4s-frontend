@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import "./Login.css"
 
 export const Register = (props) => {
@@ -8,12 +8,22 @@ export const Register = (props) => {
     const password = useRef()
     const verifyPassword = useRef()
     const passwordDialog = useRef()
+    const sex = useRef()
 
-    // const existingUserCheck = () => {
-    //     return fetch(`http://localhost:8000/customers?email=${email.current.value}`)
-    //         .then(_ => _.json())
-    //         .then(user => !!user.length)
-    // }
+    const [ userImage, setUserImage ] = useState("")
+
+    const getBase64 = (file, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(file);
+    }
+
+    const createPostImageJSON = (event) => {
+        
+        getBase64(event.target.files[0], (base64ImageString) => {
+            setUserImage({'image_data':base64ImageString})
+        });
+    }
 
     const handleRegister = (e) => {
         e.preventDefault()
@@ -30,7 +40,8 @@ export const Register = (props) => {
                             password: password.current.value,
                             first_name: firstName.current.value,
                             last_name: lastName.current.value,
-                            sex_id: 1
+                            sex_id: sex.current.value,
+                            profile_image: userImage.image_data
                         })
                     })
                         .then(_ => _.json())
@@ -74,7 +85,16 @@ export const Register = (props) => {
                         placeholder="Last name"
                         required />
                 </fieldset>
+                <select ref={sex}>
+                <option value="1">Femme</option>
+                <option value="2">Masc</option>
+                </select>
                 <fieldset>
+                <fieldset>
+                        <div className="uploadButtons">
+                            <input type="file" id="image_url" onChange={(evt) => {createPostImageJSON(evt)}} />
+                        </div>
+                </fieldset>
                     <label htmlFor="inputPassword"> Password </label>
                     <input ref={password} type="password"
                         name="password"
