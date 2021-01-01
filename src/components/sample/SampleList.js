@@ -23,6 +23,7 @@ export const SampleList = (props) => {
         getSamples()
         getUsers()
         getUserById(currentUser)
+        console.log(user.id, samples)
     }, [])
 
     // JSX
@@ -35,7 +36,8 @@ export const SampleList = (props) => {
                         </div> 
                 {
                     samples.map(sample => {
-                        return <Sample key={sample.id} sample={sample} />
+                        if(user.id === sample.uploader){
+                        return <Sample key={sample.id} sample={sample} />}
                     })
                 }
             </div> 
