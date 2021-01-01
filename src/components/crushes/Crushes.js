@@ -4,9 +4,6 @@ import { SampleContext } from "../sample/SampleProvider"
 import { CrushPanel } from "./CrushPanel"
 import "./Samples.css"
 import 'react-h5-audio-player/lib/styles.css'
-import { Link } from "react-router-dom"
-import AudioPlayer from 'react-h5-audio-player';
-
 
 export const Crushes = (props) => {
 
@@ -18,10 +15,10 @@ export const Crushes = (props) => {
         getUsers,
         getSamples,
         samples,
+        ratings,
         searchTerms,
+        getRatings,
     } = useContext(SampleContext)
-
-    // State
 
     const [ filteredSamples, setFiltered ] = useState([])
 
@@ -31,10 +28,12 @@ export const Crushes = (props) => {
         getSamples()
         getUsers()
         getFavorites()
+        getRatings()
     }, [])
 
     useEffect(() => {
     setFiltered(samples)
+    console.log(ratings.sort((a, b) => (a.rating > b.rating) ? 1 : -1))
     }, [searchTerms, samples, filterValue])
 
     // JSX

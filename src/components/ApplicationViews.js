@@ -29,10 +29,6 @@ export const ApplicationViews = (props) => {
                     <Route exact path="/crushes" render={(props) => {
                         return <>
                         <div class="heading"><h1>Your Crushes</h1></div>
-                        <div class="filters">
-                            <SampleSearch />
-                            <SampleFilter />
-                        </div>
                             <Crushes history={props.history} />
                     </>
                     }} />

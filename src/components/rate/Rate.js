@@ -44,7 +44,7 @@ export const Rate = (props) => {
         });
         waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
         waveformRef.current.setWaveColor(color)
-      }, []);
+      }, [])
 
       useEffect(() => {
         waveformRef.current.setWaveColor(color)
