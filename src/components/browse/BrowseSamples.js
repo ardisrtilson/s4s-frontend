@@ -1,8 +1,9 @@
 // Organized
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState, useRef } from "react"
 import { SampleContext } from "../sample/SampleProvider"
 import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
+import WaveSurfer from "wavesurfer.js";
 import "./Browse.css"
 import 'react-h5-audio-player/lib/styles.css'
 
@@ -13,6 +14,8 @@ export const BrowseSamples = (props) => {
     const [noneLeft, setNoneLeft] = useState(false)
     const [zeroed, setZeroed] = useState(false)
     const [itemsLeftToShow, setitemsLeftToShow] = useState([])
+
+    const waveformRef = useRef(null);
 
     const { favorites,
         getUsers,
@@ -48,6 +51,16 @@ export const BrowseSamples = (props) => {
         })
     }
     
+    useEffect(() => {
+        waveformRef.current = WaveSurfer.create({ 
+          container: waveformRef.current,
+          cursorColor: "transparent",
+          backgroundColor: "black"
+        });
+        waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
+        waveformRef.current.setWaveColor("white")
+      }, [])
+
     useEffect(() => {
         getUsers().then(getSkipped).then(getFavorites).then(getRandomSample)
     }, [])
@@ -96,9 +109,10 @@ export const BrowseSamples = (props) => {
 
     if (noneLeft !== true) {
         return (
-            <div class="sampleCard">
+            <div>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
                 <img class="img" src={currentSample.sample_image}></img>
+                <div ref={waveformRef} />
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}

@@ -2,6 +2,10 @@
     margin: 0 5rem;
 }
 
+.App {
+  font-family: sans-serif;
+}
+
 .img {
   float: left;
   width:  100px;

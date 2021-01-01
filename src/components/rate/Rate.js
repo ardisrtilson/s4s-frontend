@@ -1,30 +1,54 @@
 // Organized
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState, useRef } from "react"
 import Rating from '@material-ui/lab/Rating';
 import { SampleContext } from "../sample/SampleProvider"
 import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
 import "./Browse.css"
+import WaveSurfer from "wavesurfer.js";
 import 'react-h5-audio-player/lib/styles.css'
-import { ColorPicker } from 'material-ui-color';
+import { HexColorPicker } from "react-colorful";
+import "react-colorful/dist/index.css";
+
 export const Rate = (props) => {
 
     const [rSampleItem, setRSampleValue] = useState(0)
+    const [value, setValue] = useState(null)
+    const [volume, setVolume] = useState(null)
     const [currentSample, setCurrentSample] = useState({})
     const [noneLeft, setNoneLeft] = useState(false)
     const [zeroed, setZeroed] = useState(false)
     const [itemsLeftToShow, setitemsLeftToShow] = useState([])
+    const [color, setColor] = useState("#aabbcc");
+
+    const waveformRef = useRef(null);
+
     const { favorites,
         getUsers,
         getFavorites,
         getRandomSample,
         randomSample,
-        addFavorites,
         skipped,
-        addSkipped,
+        addRatings,
+        getRatings,
+        ratings,
         getSkipped,
         randomSamplesLoaded,
     } = useContext(SampleContext)
+
+    useEffect(() => {
+        waveformRef.current = WaveSurfer.create({ 
+          container: waveformRef.current,
+          cursorColor: "transparent",
+          backgroundColor: "black"
+        });
+        waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
+        waveformRef.current.setWaveColor(color)
+      }, [])
+
+      useEffect(() => {
+        waveformRef.current.setWaveColor(color)
+      }, [color]);
 
     function comparer(otherArray) {
         return function (current) {
@@ -34,17 +58,12 @@ export const Rate = (props) => {
         }
     }
 
-    const addSampleToFavorites = () => {
-        addFavorites({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: currentSample.id
-        })
-    }
-
-    const addSampleToSkipped = () => {
-        addSkipped({
-            user: parseInt(localStorage.getItem("user_number")),
-            sample: currentSample.id
+    const addSampleRatings = () => {
+        addRatings({
+            sample: currentSample.id,
+            color: color,
+            rating: value,
+            loudness: volume
         })
     }
     
@@ -92,38 +111,29 @@ export const Rate = (props) => {
             setitemsLeftToShow(randomSamplesThatHaveNotBeenSkippedOrFavorited)
             //Increment
         }
-    }, [favorites, skipped, randomSample])
+    }, [randomSample, ratings])
 
     if (noneLeft !== true) {
         return (
             <>
-            <div class="sampleCard">
+            <div class ="sampleContainer">
             <img class="img" src={currentSample.sample_image}></img>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
-                <ColorPicker 
-                defaultValue="transparent"
-/>
+                <div ref={waveformRef} />
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
                     onPlay={e => console.log("onPlay")}
-                    onVolumeChange={e => console.log(e.target.volume)} />
-            </div>
-
-            <div class="sampleCard">
-            Drag the volume slider til the sound is just right.
-            </div>
-
-            <div class="sampleCard">
-            What color is this sound?
-            </div>
-
-            <div class="sampleCard">
-            What shape is this sound?
-            </div>
-
-            <div class="sampleCard">
-            <Rating />
+                    onVolumeChange={e => setVolume(e.target.volume)} />
+                <HexColorPicker color={color} onChange={setColor} />
+                <div className="value" style={{ color: color }}>
+                Current color is {color}
+                </div>
+                <Rating 
+                value={value}
+                onChange={(event, newValue) => {setValue(newValue)}}/>
+                    <button class="button5" onClick={addSampleRatings}>Submit Ratings</button>
+                    <button class="button2" onClick={getRatings}>Skip</button>
             </div>
             </>
         )

@@ -5,15 +5,18 @@ export const SampleContext = React.createContext()
 export const SampleProvider = (props) => {
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
+    const [ratings, setRatings] = useState([])
     const [randomSample, setRandomSample] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
     const [ratingValue, setRating] = useState([])
     const [samples, setSamples] = useState([])
+    const [singleSample, setSingleSample] = useState({})
     const [skipped, setSkipped] = useState([])
     const [searchTerms, setTerms] = useState("")
     const [user, setUser] = useState("")
     const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
+    const [singleSampleLoaded, setSingleSampleLoaded] = useState(false)
 
     const getUserById = (id) => {
         return fetch(`http://localhost:8000/users/${id}`, {
@@ -28,7 +31,8 @@ export const SampleProvider = (props) => {
         return fetch("http://localhost:8000/comments", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
             },
             body: JSON.stringify(comment)
         })
@@ -58,6 +62,27 @@ export const SampleProvider = (props) => {
             .then(getSkipped)
     }
 
+    const addRatings = rating => {
+        return fetch("http://localhost:8000/sampleRatings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
+            body: JSON.stringify(rating)
+        })
+            .then(getRatings)
+    }
+
+    const getRatings = () => {
+        return fetch("http://localhost:8000/sampleRatings", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
+            .then(res => res.json())
+            .then(setRatings)
+    }
+
     const addSample = sample => {
         return fetch("http://localhost:8000/samples", {
             method: "POST",
@@ -70,7 +95,10 @@ export const SampleProvider = (props) => {
             .then(getSamples)
     }
     const getComments = () => {
-        return fetch("http://localhost:8088/comments")
+        return fetch("http://localhost:8000/comments", {
+            headers:{
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            }})
             .then(res => res.json())
             .then(setComments)
     }
@@ -127,7 +155,8 @@ export const SampleProvider = (props) => {
                 "Authorization": `Token ${localStorage.getItem("user_id")}`
             }})
             .then(res => res.json())
-            .then(setSamples)
+            .then(setSingleSample)
+            .then(setSingleSampleLoaded(true))
     }
     
     const releaseComment = (commentId) => {
@@ -147,7 +176,7 @@ export const SampleProvider = (props) => {
             .then(getFavorites)
     }
     const releaseSample = (sampleId) => {
-        return fetch(`http://localhost:8000/userFavorites/${sampleId}`, {
+        return fetch(`http://localhost:8000/samples/${sampleId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -178,7 +207,10 @@ export const SampleProvider = (props) => {
                 commentValue,
                 users,
                 favorites, 
-                filterValue, 
+                filterValue,
+                ratings,
+                getRatings,
+                addRatings,
                 getComments,
                 getUsers,
                 getFavorites,
@@ -190,7 +222,9 @@ export const SampleProvider = (props) => {
                 ratingValue,
                 releaseComment,
                 releaseFavorite,
+                singleSampleLoaded,
                 samples,
+                singleSample,
                 skipped,
                 getSkipped,
                 setSkipped,

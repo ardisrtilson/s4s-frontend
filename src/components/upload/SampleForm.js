@@ -49,9 +49,6 @@ export const SampleForm = (props) => {
                 getURL().then(() => {
                     addSample({
                         name: name.current.value,
-                        rating: "0",
-                        loudness: "0",
-                        color: "0",
                         audio_url: url,
                         date_added: "2020-7-7", 
                         sample_image: postImage.sample_image
@@ -59,14 +56,10 @@ export const SampleForm = (props) => {
                     thingsRef.add({
                         name: name.current.value,
                         uploader: localStorage.getItem("user_number"),
-                        rating: "0",
-                        loudness: "0",
-                        color: "0",
                         audio_url: url,
                         date_added: "2020-7-7",
                         sample_image: postImage.sample_image
                     })
-
                     .then(() => props.history.push("/"))
                 })
             })
