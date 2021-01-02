@@ -126,9 +126,6 @@ export const Rate = (props) => {
                     onPlay={e => console.log("onPlay")}
                     onVolumeChange={e => setVolume(e.target.volume)} />
                 <HexColorPicker color={color} onChange={setColor} />
-                <div className="value" style={{ color: color }}>
-                Current color is {color}
-                </div>
                 <Rating 
                 value={value}
                 onChange={(event, newValue) => {setValue(newValue)}}/>

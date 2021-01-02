@@ -2,14 +2,12 @@ import React from "react"
 import { Route } from "react-router-dom"
 import { SampleProvider } from "./sample/SampleProvider"
 import { SampleList } from "./sample/SampleList"
-import { SampleFilter } from "./sample/SampleFilters"
 import { SampleForm } from "./upload/SampleForm"
 import { SampleDetails} from "./sample/SampleDetail"
-import { SampleSearch } from "./sample/SampleSearch"
-import { Crushes } from "./crushes/Crushes"
 import { BrowseSamples } from "./browse/BrowseSamples"
 import { Rate } from "./rate/Rate"
 import "./sample/Samples.css"
+import { CrushPanel } from "./crushes/CrushPanel"
 
 export const ApplicationViews = (props) => {
     return (
@@ -29,7 +27,7 @@ export const ApplicationViews = (props) => {
                     <Route exact path="/crushes" render={(props) => {
                         return <>
                         <div class="heading"><h1>Your Crushes</h1></div>
-                            <Crushes history={props.history} />
+                            <CrushPanel />
                     </>
                     }} />
 
