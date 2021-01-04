@@ -107,7 +107,6 @@ export const BrowseSamples = (props) => {
     }, [favorites, skipped, randomSample])
 
     if (noneLeft !== true && randomSamplesLoaded) {
-        console.log(currentSample)
         return (
             <div>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>

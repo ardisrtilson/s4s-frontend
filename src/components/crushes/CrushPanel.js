@@ -4,16 +4,23 @@ import React, {useContext, useState, useEffect, useRef, createRef} from "react"
 import "./Samples.css"
 import AudioPlayer from 'react-h5-audio-player';
 import WaveSurfer from "wavesurfer.js";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 export const CrushPanel = ({sample}) => {
 
   const [ faves, setFaves ] = useState([])
+  const [ sort, setSort ] = useState([])
   const [ thisUserFavorites, setThisUserFavorites ] = useState([])
   const [ currentUser, setCurrentUser] = useState(parseInt(localStorage.getItem("user_number")))
 
   const lineRefs = useRef([])
   const waveformRef = useRef(null)
   const waveformRef2 = useRef(null)
+
+  const handleControlledInputChange = (e) => {
+    setSort(e.target.value)
+}
 
   useEffect(() => {
     waveformRef.current = WaveSurfer.create({ 
@@ -43,6 +50,7 @@ export const CrushPanel = ({sample}) => {
     getSamples,
     samples,
     getRatings,
+    ratings,
   } = useContext(SampleContext)
 
   useEffect(() => {
@@ -50,16 +58,26 @@ export const CrushPanel = ({sample}) => {
     getFavorites()).then(
     getRatings()).then(
     getSamples())
+    console.log(ratings)
 }, [])
 
 useEffect(() => {
   lineRefs.current = samples.map((_, i) => lineRefs.current[i] ?? createRef())
-  console.log(lineRefs.current)
 }, [samples])
 
 useEffect(() => {
   setThisUserFavorites(favorites.filter(faves => faves.user_id === currentUser))
 }, [favorites, currentUser])
+
+useEffect(() => {
+  if(sort === 1){console.log("Rating Selected")}
+  else if (sort === 2){console.log("Color Selected")}
+  else if (sort === 3){console.log("Volume Selected")}
+  else if (sort === 4){setFaves(faves.sort((a, b) => (a.names > b.names) ? 1 : -1))
+  getRatings()}
+  else if (sort === 5){setFaves(faves.sort((a, b) => (a.names < b.names) ? 1 : -1))
+  getRatings()}
+}, [sort])
 
 useEffect(() => {
   if (samples && samples.length){
@@ -78,6 +96,19 @@ useEffect(() => {
 return (
   <>
   <div className="samples">
+          <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={0}
+          onChange={handleControlledInputChange}
+        >
+          <MenuItem value={0}>Sort By</MenuItem>
+          <MenuItem value={1}>Rating</MenuItem>
+          <MenuItem value={2}>Color</MenuItem>
+          <MenuItem value={3}>Subjective Volume</MenuItem>
+          <MenuItem value={4}>Alphabetical</MenuItem>
+          <MenuItem value={5}>Reverse Alphabetical</MenuItem>
+        </Select>
                 <div class>
                 <div ref={waveformRef} />
                 <div ref={waveformRef2} />

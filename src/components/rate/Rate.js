@@ -59,6 +59,7 @@ export const Rate = () => {
     }
 
     const addSampleRatings = () => {
+        console.log(volume)
         addRatings({
             sample: currentSample.id,
             color: color,

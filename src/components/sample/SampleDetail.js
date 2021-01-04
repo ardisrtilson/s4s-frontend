@@ -20,10 +20,16 @@ export const SampleDetails = (props) => {
 
   const handleControlledInputChange = (e) => {
     const newComment = Object.assign({}, localState)
-    console.log(newComment)
     newComment[e.target.name] = e.target.value
     setLocalState(newComment)
 }
+
+const deleteComment = (id) => {
+  console.log(id)
+  releaseComment(id)
+  getComments()
+}
+
 const submitComment = () => {
   addComment({
     content: localState.content,
@@ -32,7 +38,6 @@ const submitComment = () => {
     sample: props.match.params.sampleId
 })
   getComments()
-  console.log(commentValue)
 }
 
   const waveformRef = useRef(null);
@@ -43,7 +48,8 @@ const submitComment = () => {
         getSampleById,
         getComments,
         commentValue,
-        addComment
+        addComment,
+        releaseComment
     } = useContext(SampleContext)
 
     useEffect(() => {
@@ -54,7 +60,6 @@ const submitComment = () => {
         });
         waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
         waveformRef.current.setWaveColor("red")
-        console.log(waveformRef)
       }, [])
 
     useEffect(() => {
@@ -85,13 +90,14 @@ const submitComment = () => {
       <Paper style={{ padding: "40px 20px" }}>
         <Grid container wrap="nowrap" spacing={2}>
           <Grid item>
-            <Avatar alt="Remy Sharp" src={singleSample.sample_image} />
+            <Avatar alt="Remy Sharp" src={comment.user.profile_image} />
           </Grid>
           <Grid justifyContent="left" item xs zeroMinWidth>
-            <h4 style={{ margin: 0, textAlign: "left" }}>Michel Michel</h4>
+            <h4 style={{ margin: 0, textAlign: "left" }}>{comment.user.user.username}</h4>
             <p style={{ textAlign: "left" }}>
               {comment.content}
             </p>
+            <Button onClick={() => {deleteComment(comment.id)}}>Delete Comment</Button>
             <p style={{ textAlign: "left", color: "gray" }}>
               posted 1 minute ago
             </p>

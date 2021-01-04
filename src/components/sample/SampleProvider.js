@@ -36,7 +36,7 @@ export const SampleProvider = (props) => {
             },
             body: JSON.stringify(comment)
         })
-            .then(getSamples)
+            .then(getComments)
     }
     const addFavorites = favorite => {
         return fetch("http://localhost:8000/userFavorites", {
@@ -160,8 +160,12 @@ export const SampleProvider = (props) => {
     }
     
     const releaseComment = (commentId) => {
-        return fetch(`http://localhost:8088/comments/${commentId}`, {
-            method: "DELETE"
+        return fetch(`http://localhost:8000/comments/${commentId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
         })
             .then(getComments)
     }

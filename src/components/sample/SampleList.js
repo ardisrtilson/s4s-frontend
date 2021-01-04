@@ -19,9 +19,10 @@ export const SampleList = ({sample}) => {
     getUsers,
     getSamples,
     samples,
-    ratings,
     searchTerms,
+    user,
     getRatings,
+    getUserById,
     releaseSample
   } = useContext(SampleContext)
 
@@ -29,6 +30,8 @@ export const SampleList = ({sample}) => {
     getSamples()
     getUsers()
     getRatings()
+    getUserById(currentUser)
+    console.log(user)
 }, [])
 
   // useEffect(() => {
@@ -59,6 +62,7 @@ return (
   <>
   <div className="samples">
                 <div class="sampleCard">
+                <img class="img" src={user.profile_image}></img>
                         </div> 
                 {
                     thisUserSamples.map(sample => {
