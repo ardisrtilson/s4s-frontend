@@ -5,12 +5,12 @@ import { SampleContext } from "../sample/SampleProvider"
 import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
 import "./Browse.css"
-import WaveSurfer from "wavesurfer.js";
+// import WaveSurfer from "wavesurfer.js";
 import 'react-h5-audio-player/lib/styles.css'
 import { HexColorPicker } from "react-colorful";
 import "react-colorful/dist/index.css";
 
-export const Rate = (props) => {
+export const Rate = () => {
 
     const [rSampleItem, setRSampleValue] = useState(0)
     const [value, setValue] = useState(null)
@@ -36,19 +36,19 @@ export const Rate = (props) => {
         randomSamplesLoaded,
     } = useContext(SampleContext)
 
-    useEffect(() => {
-        waveformRef.current = WaveSurfer.create({ 
-          container: waveformRef.current,
-          cursorColor: "transparent",
-          backgroundColor: "black"
-        });
-        waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
-        waveformRef.current.setWaveColor(color)
-      }, [])
+    // useEffect(() => {
+    //     waveformRef.current = WaveSurfer.create({ 
+    //       container: waveformRef.current,
+    //       cursorColor: "transparent",
+    //       backgroundColor: "black"
+    //     });
+    //     waveformRef.current.load('')
+    //     waveformRef.current.setWaveColor(color)
+    //   }, [])
 
-      useEffect(() => {
-        waveformRef.current.setWaveColor(color)
-      }, [color]);
+    //   useEffect(() => {
+    //     waveformRef.current.setWaveColor(color)
+    //   }, [color]);
 
     function comparer(otherArray) {
         return function (current) {
@@ -100,7 +100,7 @@ export const Rate = (props) => {
 
     useEffect(() => {
 
-        //Filtration
+        //Filtrationxs
         let currentUser = parseInt(localStorage.getItem("user_number"))
         let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)
         let thisUserSkipped = skipped.filter(skip => skip.user_id === currentUser)
@@ -119,18 +119,18 @@ export const Rate = (props) => {
             <div class ="sampleContainer">
             <img class="img" src={currentSample.sample_image}></img>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
-                <div ref={waveformRef} />
+                <Rating 
+                value={value}
+                onChange={(event, newValue) => {setValue(newValue)}}/>
+                {/* <div ref={waveformRef} /> */}
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
                     onPlay={e => console.log("onPlay")}
                     onVolumeChange={e => setVolume(e.target.volume)} />
-                <HexColorPicker color={color} onChange={setColor} />
-                <Rating 
-                value={value}
-                onChange={(event, newValue) => {setValue(newValue)}}/>
                     <button class="button5" onClick={addSampleRatings}>Submit Ratings</button>
                     <button class="button2" onClick={getRatings}>Skip</button>
+                <HexColorPicker color={color} onChange={setColor} />
             </div>
             </>
         )

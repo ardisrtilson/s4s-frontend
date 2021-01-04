@@ -1,49 +1,71 @@
 import { SampleContext } from "../sample/SampleProvider"
 import { Link } from "react-router-dom"
-import React, {useContext, useState, useEffect, useRef} from "react"
+import React, {useContext, useState, useEffect, useRef, createRef} from "react"
 import "./Samples.css"
 import AudioPlayer from 'react-h5-audio-player';
-// import WaveSurfer from "wavesurfer.js";
+import WaveSurfer from "wavesurfer.js";
 
 export const CrushPanel = ({sample}) => {
 
-  const [ filteredSamples, setFiltered ] = useState([])
+  const [ faves, setFaves ] = useState([])
+  const [ thisUserFavorites, setThisUserFavorites ] = useState([])
+  const [ currentUser, setCurrentUser] = useState(parseInt(localStorage.getItem("user_number")))
 
-  // const waveformRef = useRef(null)
+  const lineRefs = useRef([])
+  const waveformRef = useRef(null)
+  const waveformRef2 = useRef(null)
+
+  useEffect(() => {
+    waveformRef.current = WaveSurfer.create({ 
+      container: waveformRef.current,
+      cursorColor: "transparent",
+      backgroundColor: "black"
+    });
+    waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
+    waveformRef.current.setWaveColor("red")
+  }, [])
+
+  useEffect(() => {
+    waveformRef2.current = WaveSurfer.create({ 
+      container: waveformRef2.current,
+      cursorColor: "transparent",
+      backgroundColor: "black"
+    });
+    waveformRef2.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
+    waveformRef2.current.setWaveColor("red")
+  }, [])
 
   const {
     favorites, 
     releaseFavorite, 
     getFavorites,
-    filterValue, 
     getUsers,
     getSamples,
     samples,
-    ratings,
-    searchTerms,
     getRatings,
   } = useContext(SampleContext)
 
   useEffect(() => {
-    getSamples()
-    getUsers()
-    getFavorites()
-    getRatings()
+    getUsers().then(
+    getFavorites()).then(
+    getRatings()).then(
+    getSamples())
 }, [])
 
-  // useEffect(() => {
-  //   waveformRef.current = WaveSurfer.create({ 
-  //     container: waveformRef.current,
-  //     cursorColor: "transparent",
-  //     backgroundColor: "black"
-  //   });
-  //   waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
-  //   waveformRef.current.setWaveColor("white")
-  // }, [])
+useEffect(() => {
+  lineRefs.current = samples.map((_, i) => lineRefs.current[i] ?? createRef())
+  console.log(lineRefs.current)
+}, [samples])
 
-  const currentUser = parseInt(localStorage.getItem("user_number"))
-  let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)
-  let faves = thisUserFavorites.map(fave => samples.find(sample => fave.sample_id === sample.id))
+useEffect(() => {
+  setThisUserFavorites(favorites.filter(faves => faves.user_id === currentUser))
+}, [favorites, currentUser])
+
+useEffect(() => {
+  if (samples && samples.length){
+    setFaves(thisUserFavorites.map(fave => samples.find(sample => fave.sample_id === sample.id)))
+  }
+}, [thisUserFavorites, samples])
 
         const downloadFile = () => {
           window.location.href = sample.audio_url
@@ -53,19 +75,20 @@ export const CrushPanel = ({sample}) => {
           let favId = thisUserFavorites.find(favorite => favorite.sample_id === sample.id)
           releaseFavorite(favId.id).then(getFavorites)
         }
-
 return (
   <>
   <div className="samples">
-                <div class="sampleCard">
-                        </div> 
+                <div class>
+                <div ref={waveformRef} />
+                <div ref={waveformRef2} />
+                {/* <div ref={lineRefs.current[1]} /> */}
+                        </div>
                 {
                     faves.map(sample => {
                         return (
                           <section>
                           <img class="img" src={sample.sample_image}></img>
                             <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
-                            {/* <div ref={waveformRef} /> */}
                                   <AudioPlayer 
                                       autoPlayAfterSrcChange={false}
                                       preload="true"
@@ -75,7 +98,7 @@ return (
                                   <button class="button3" onClick={downloadFile}>Download Sample</button>
                           </section>)
                     })
-                }
+                  }
             </div> 
 </>
 )

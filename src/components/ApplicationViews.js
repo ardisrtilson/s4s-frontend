@@ -15,46 +15,29 @@ export const ApplicationViews = (props) => {
 
             <SampleProvider>
 
-                    <Route exact path="/" render={(props) => {
-                        return <>
-                        <div class="heading"><h1>Your Samples</h1></div>
-                        <div class="filters">
-                        </div>
-                            <SampleList history={props.history} />
-                    </>
-                    }} />
+            <Route exact path="/" render={
+                        props => <SampleList {...props} />
+                    } />
 
-                    <Route exact path="/crushes" render={(props) => {
-                        return <>
-                        <div class="heading"><h1>Your Crushes</h1></div>
-                            <CrushPanel />
-                    </>
-                    }} />
+                    <Route exact path="/crushes" render={
+                        props => <CrushPanel {...props} />
+                    } />
 
                     <Route path="/browse/:sampleId(\d+)" render={
                         props => <SampleDetails {...props} />
                     } />
 
-                    <Route exact path="/browse" render={(props) => {
-                                        return <>
-                                        <div class="heading"><h1>Lookin 4 Samples</h1></div>
-                                        <div class="filters">
-                                        </div>
-                                            <BrowseSamples history={props.history} />
-                                    </>
-                                    }} />
+                    <Route exact path="/browse" render={
+                        props => <BrowseSamples {...props} />}/>
 
-                    <Route path="/upload" render={(props) => {
-                        return <>
-                                <SampleForm {...props} />
-                        </>
-                    }} />
+                    <Route exact path="/upload" render={
+                        props => <SampleForm {...props} />
+                    } />
 
-                    <Route path="/rate" render={(props) => {
-                        return <>
-                                <Rate {...props} />
-                        </>
-                    }} />
+                    <Route exact path="/rate" render={
+                        props => <Rate {...props} />
+                    } />
+
 
             </SampleProvider>
 

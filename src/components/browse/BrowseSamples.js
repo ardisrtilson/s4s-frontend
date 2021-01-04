@@ -73,13 +73,15 @@ export const BrowseSamples = (props) => {
 
     useEffect(() => {
     if (randomSamplesLoaded && itemsLeftToShow.length > 0){
-            console.log(itemsLeftToShow[rSampleItem])
-            if (rSampleItem < itemsLeftToShow.length - 1) {
+            if (rSampleItem < itemsLeftToShow.length-1) {
                 let increment = rSampleItem + 1
                 setRSampleValue(increment)
-            } else {
-                setRSampleValue(0)
+            } 
+            else if(rSampleItem === 0 && itemsLeftToShow.length-1 === 0){
                 setZeroed(true)
+            }
+            else {
+                setRSampleValue(0)
             }
             setNoneLeft(false)
     }
@@ -87,9 +89,7 @@ export const BrowseSamples = (props) => {
         //data has been loaded from api, filtering done, no items left to show
         setNoneLeft(true)
     }
-    else {
-        
-    }
+    
     }, [itemsLeftToShow, randomSample, randomSamplesLoaded])
 
     useEffect(() => {
@@ -101,13 +101,13 @@ export const BrowseSamples = (props) => {
         if (randomSample.length > 0) {
             let randomSamplesThatHaveNotBeenFavorited = randomSample.filter(comparer(thisUserFavorites))
             let randomSamplesThatHaveNotBeenSkippedOrFavorited = randomSamplesThatHaveNotBeenFavorited.filter(comparer(thisUserSkipped))
-            console.log(randomSamplesThatHaveNotBeenSkippedOrFavorited)
             setitemsLeftToShow(randomSamplesThatHaveNotBeenSkippedOrFavorited)
             //Increment
         }
     }, [favorites, skipped, randomSample])
 
-    if (noneLeft !== true) {
+    if (noneLeft !== true && randomSamplesLoaded) {
+        console.log(currentSample)
         return (
             <div>
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
@@ -126,6 +126,7 @@ export const BrowseSamples = (props) => {
     else {
         return (
             <div class="sampleCard">
+                <div ref={waveformRef} />
                 None Left
             </div>
         )
