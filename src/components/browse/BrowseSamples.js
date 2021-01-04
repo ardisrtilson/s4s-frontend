@@ -109,9 +109,9 @@ export const BrowseSamples = (props) => {
     if (noneLeft !== true && randomSamplesLoaded) {
         return (
             <div>
+                <div ref={waveformRef} />
                 <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
                 <img class="img" src={currentSample.sample_image}></img>
-                <div ref={waveformRef} />
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}

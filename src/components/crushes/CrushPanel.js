@@ -6,6 +6,8 @@ import AudioPlayer from 'react-h5-audio-player';
 import WaveSurfer from "wavesurfer.js";
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import AvgRating from '@material-ui/lab/Rating';
+import ReactColorSquare from "react-color-square";
 
 export const CrushPanel = ({sample}) => {
 
@@ -16,8 +18,6 @@ export const CrushPanel = ({sample}) => {
 
   const lineRefs = useRef([])
   const waveformRef = useRef(null)
-  const waveformRef2 = useRef(null)
-
   const handleControlledInputChange = (e) => {
     setSort(e.target.value)
 }
@@ -30,16 +30,6 @@ export const CrushPanel = ({sample}) => {
     });
     waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
     waveformRef.current.setWaveColor("red")
-  }, [])
-
-  useEffect(() => {
-    waveformRef2.current = WaveSurfer.create({ 
-      container: waveformRef2.current,
-      cursorColor: "transparent",
-      backgroundColor: "black"
-    });
-    waveformRef2.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
-    waveformRef2.current.setWaveColor("red")
   }, [])
 
   const {
@@ -58,7 +48,6 @@ export const CrushPanel = ({sample}) => {
     getFavorites()).then(
     getRatings()).then(
     getSamples())
-    console.log(ratings)
 }, [])
 
 useEffect(() => {
@@ -70,9 +59,9 @@ useEffect(() => {
 }, [favorites, currentUser])
 
 useEffect(() => {
-  if(sort === 1){console.log("Rating Selected")}
-  else if (sort === 2){console.log("Color Selected")}
-  else if (sort === 3){console.log("Volume Selected")}
+  if(sort === 1){setFaves(faves.sort((a, b) => (a.averageRating > b.averageRating) ? 1 : -1))}
+  else if (sort === 2){setFaves(faves.sort((a, b) => (a.averageColor > b.averageColor) ? 1 : -1))}
+  else if (sort === 3){setFaves(faves.sort((a, b) => (a.averageLoudness > b.averageLoudness) ? 1 : -1))}
   else if (sort === 4){setFaves(faves.sort((a, b) => (a.names > b.names) ? 1 : -1))
   getRatings()}
   else if (sort === 5){setFaves(faves.sort((a, b) => (a.names < b.names) ? 1 : -1))
@@ -103,7 +92,7 @@ return (
           onChange={handleControlledInputChange}
         >
           <MenuItem value={0}>Sort By</MenuItem>
-          <MenuItem value={1}>Rating</MenuItem>
+          <MenuItem value={1}>Avg. Rating</MenuItem>
           <MenuItem value={2}>Color</MenuItem>
           <MenuItem value={3}>Subjective Volume</MenuItem>
           <MenuItem value={4}>Alphabetical</MenuItem>
@@ -111,18 +100,33 @@ return (
         </Select>
                 <div class>
                 <div ref={waveformRef} />
-                <div ref={waveformRef2} />
                 {/* <div ref={lineRefs.current[1]} /> */}
                         </div>
                 {
                     faves.map(sample => {
+                      let thisSampleFavorites = ratings.filter(rating => rating.sample.id === sample.id)
+                      let averageRating = thisSampleFavorites.reduce((total, next) => total + parseInt(next.rating), 0) / thisSampleFavorites.length;
+                      let averageLoudness = thisSampleFavorites.reduce((total, next) => total + parseFloat(next.loudness), 0) / thisSampleFavorites.length;
+                      let averageColor = thisSampleFavorites.reduce((total, next) => total + parseInt(next.color.substring(1), 16), 0) / thisSampleFavorites.length;
+                      let averageColorHex = Math.round(averageColor).toString(16)
+                      if(isNaN(averageColorHex)){averageColorHex = "ffffff"}
+                      averageColorHex = '#' + averageColorHex
+                      if(isNaN(averageLoudness)){averageLoudness = 1.0}
+                      if(isNaN(averageRating)){averageRating = 0}
+                      sample.averageColorHex = averageColorHex
+                      sample.averageLoudness = averageLoudness 
+                      sample.averageRating = averageRating
                         return (
                           <section>
                           <img class="img" src={sample.sample_image}></img>
                             <div class="link_card button4"><Link to={`/browse/${sample.id}`}>{sample.name}</Link></div>
+                            <AvgRating 
+                            value={averageRating}/>
+                            <ReactColorSquare height={150} color={averageColorHex} text="Average Color" />
                                   <AudioPlayer 
                                       autoPlayAfterSrcChange={false}
                                       preload="true"
+                                      volume={averageLoudness}
                                       src={sample.audio_url}
                                       onPlay={e => console.log("onPlay")}/>
                                   <button class="button5" onClick={()=>removeFavorite(sample)}>Remove Favorite</button>

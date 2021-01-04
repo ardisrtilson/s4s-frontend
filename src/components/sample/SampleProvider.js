@@ -5,16 +5,15 @@ export const SampleContext = React.createContext()
 export const SampleProvider = (props) => {
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
-    const [ratings, setRatings] = useState([])
     const [randomSample, setRandomSample] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
-    const [ratingValue, setRating] = useState([])
+    const [ratings, setRatings] = useState([])
     const [samples, setSamples] = useState([])
     const [singleSample, setSingleSample] = useState({})
     const [skipped, setSkipped] = useState([])
     const [searchTerms, setTerms] = useState("")
-    const [user, setUser] = useState("")
+    const [user, setUser] = useState({})
     const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
     const [singleSampleLoaded, setSingleSampleLoaded] = useState(false)
 
@@ -223,7 +222,6 @@ export const SampleProvider = (props) => {
                 getRandomSample,
                 randomSample,
                 releaseSample, 
-                ratingValue,
                 releaseComment,
                 releaseFavorite,
                 singleSampleLoaded,
@@ -236,7 +234,7 @@ export const SampleProvider = (props) => {
                 setComments,
                 setFavorites, 
                 setFilter,
-                setRating,
+                setRatings,
                 randomSamplesLoaded,
                 setTerms,
                 updateSample,

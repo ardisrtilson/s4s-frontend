@@ -17,6 +17,7 @@
     "peaks.js": "^0.23.1",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
+    "react-color-square": "^1.0.1",
     "react-colorful": "^4.4.4",
     "react-dom": "^16.14.0",
     "react-h5-audio-player": "^3.5.0",

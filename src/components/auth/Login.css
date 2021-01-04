@@ -46,6 +46,12 @@ fieldset {
     text-align: center;
 }
 
+.img {
+    float: center;
+    width:  5rem;
+    height: 100px;;
+  }
+
 .form--login {
     background-position-x: right;
     z-index: 1;

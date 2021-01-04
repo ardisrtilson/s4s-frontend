@@ -1,6 +1,5 @@
 // Organized
 import React, { useContext, useEffect, useState, useRef } from "react"
-import Rating from '@material-ui/lab/Rating';
 import { SampleContext } from "../sample/SampleProvider"
 import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
@@ -10,6 +9,7 @@ import 'react-h5-audio-player/lib/styles.css'
 import { HexColorPicker } from "react-colorful";
 import "react-colorful/dist/index.css";
 import TextField from '@material-ui/core/TextField';
+import Rating from '@material-ui/lab/Rating';
 import Button from '@material-ui/core/Button';
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 
@@ -25,7 +25,6 @@ export const SampleDetails = (props) => {
 }
 
 const deleteComment = (id) => {
-  console.log(id)
   releaseComment(id)
   getComments()
 }
