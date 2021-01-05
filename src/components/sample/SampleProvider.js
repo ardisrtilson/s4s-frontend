@@ -3,18 +3,18 @@ import React, { useState } from "react"
 export const SampleContext = React.createContext()
 
 export const SampleProvider = (props) => {
+
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
-    const [ratings, setRatings] = useState([])
     const [randomSample, setRandomSample] = useState([])
     const [favorites, setFavorites] = useState([])
     const [filterValue, setFilter] = useState([])
-    const [ratingValue, setRating] = useState([])
+    const [ratings, setRatings] = useState([])
     const [samples, setSamples] = useState([])
     const [singleSample, setSingleSample] = useState({})
     const [skipped, setSkipped] = useState([])
     const [searchTerms, setTerms] = useState("")
-    const [user, setUser] = useState("")
+    const [user, setUser] = useState({})
     const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
     const [singleSampleLoaded, setSingleSampleLoaded] = useState(false)
 
@@ -36,7 +36,7 @@ export const SampleProvider = (props) => {
             },
             body: JSON.stringify(comment)
         })
-            .then(getSamples)
+            .then(getComments)
     }
     const addFavorites = favorite => {
         return fetch("http://localhost:8000/userFavorites", {
@@ -160,8 +160,12 @@ export const SampleProvider = (props) => {
     }
     
     const releaseComment = (commentId) => {
-        return fetch(`http://localhost:8088/comments/${commentId}`, {
-            method: "DELETE"
+        return fetch(`http://localhost:8000/comments/${commentId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${localStorage.getItem("user_id")}`
+            },
         })
             .then(getComments)
     }
@@ -200,45 +204,44 @@ export const SampleProvider = (props) => {
     return (
         <SampleContext.Provider value={
             {
-                addComment,
-                addFavorites,
-                addSample,
-                addSkipped,
                 commentValue,
                 users,
                 favorites, 
                 filterValue,
                 ratings,
-                getRatings,
+                randomSample,
+                singleSampleLoaded,
+                samples,
+                singleSample,
+                skipped,
+                searchTerms,
+                randomSamplesLoaded,
+                user,
+                addComment,
+                addFavorites,
+                addSample,
+                addSkipped,
                 addRatings,
+                getRatings,
                 getComments,
                 getUsers,
                 getFavorites,
                 getSamples, 
                 getSampleById,
                 getRandomSample,
-                randomSample,
+                getSkipped,
+                getUserById,
                 releaseSample, 
-                ratingValue,
                 releaseComment,
                 releaseFavorite,
-                singleSampleLoaded,
-                samples,
-                singleSample,
-                skipped,
-                getSkipped,
                 setSkipped,
-                searchTerms,
                 setComments,
                 setFavorites, 
                 setFilter,
-                setRating,
-                randomSamplesLoaded,
+                setRatings,
                 setTerms,
-                updateSample,
-                user,
                 setUser,
-                getUserById,
+                updateSample,
             }}>
         {props.children}
         </SampleContext.Provider>

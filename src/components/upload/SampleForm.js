@@ -41,6 +41,7 @@ export const SampleForm = (props) => {
     }
 
     const constructNewSample = () => {
+        if (file){
         let fileRef = firebase.storage().ref("Audio/" + file.name)    
         fileRef.put(file).then(() => {
             async function getURL(){
@@ -57,12 +58,13 @@ export const SampleForm = (props) => {
                         name: name.current.value,
                         uploader: localStorage.getItem("user_number"),
                         audio_url: url,
-                        date_added: "2020-7-7",
-                        sample_image: postImage.sample_image
+                        date_added: "2020-7-7"
                     })
                     .then(() => props.history.push("/"))
                 })
             })
+        }
+        else {window.confirm("Sample is still loading. Try again in a moment.")}
 }
 
     return (

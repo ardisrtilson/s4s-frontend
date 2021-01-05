@@ -4,9 +4,9 @@ import { ApplicationViews } from "./ApplicationViews"
 import { NavBar } from "./nav/NavBar"
 import { Login } from "./auth/Login"
 import { Register } from "./auth/Register"
-import "./Selektor.css"
+import "./SynthEsia.css"
 
-export const Selektor = () => (
+export const Selektor= () => (
     <>
         <Route render={() => {
             if (localStorage.getItem("user_id")) {

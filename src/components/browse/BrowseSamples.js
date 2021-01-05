@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import WaveSurfer from "wavesurfer.js";
 import "./Browse.css"
 import 'react-h5-audio-player/lib/styles.css'
+import Rating from '@material-ui/lab/Rating';
 
 export const BrowseSamples = (props) => {
 
@@ -14,8 +15,11 @@ export const BrowseSamples = (props) => {
     const [noneLeft, setNoneLeft] = useState(false)
     const [zeroed, setZeroed] = useState(false)
     const [itemsLeftToShow, setitemsLeftToShow] = useState([])
-
+    const [wavesurf, setWavesurf] = useState(false)
     const waveformRef = useRef(null);
+    const [audio_url, setAudioURL] = useState('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
+    const [color, setColor] = useState("#aabbcc")
+    const [wavesurfCreated, setWavesurfCreated] = useState(false)
 
     const { favorites,
         getUsers,
@@ -27,7 +31,35 @@ export const BrowseSamples = (props) => {
         addSkipped,
         getSkipped,
         randomSamplesLoaded,
+        getRatings,
+        ratings
     } = useContext(SampleContext)
+
+    useEffect(() => {
+        if (waveformRef.current) {
+            setWavesurf(WaveSurfer.create({
+                container: waveformRef.current,
+                cursorColor: "transparent",
+                backgroundColor: "black",
+                barWidth: 1,
+                fillParent: true
+            }))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (wavesurf !== false) {
+            wavesurf.load(currentSample.audio_url)
+        }
+    }, [currentSample])
+
+    useEffect(() => {
+        console.log(waveformRef)
+        if (wavesurf !== false) {
+            wavesurf.setWaveColor(color)
+            setWavesurfCreated(true)
+        }
+    }, [color])
 
     function comparer(otherArray) {
         return function (current) {
@@ -52,17 +84,7 @@ export const BrowseSamples = (props) => {
     }
     
     useEffect(() => {
-        waveformRef.current = WaveSurfer.create({ 
-          container: waveformRef.current,
-          cursorColor: "transparent",
-          backgroundColor: "black"
-        });
-        waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
-        waveformRef.current.setWaveColor("white")
-      }, [])
-
-    useEffect(() => {
-        getUsers().then(getSkipped).then(getFavorites).then(getRandomSample)
+        getUsers().then(getSkipped).then(getFavorites).then(getRandomSample).then(getRatings)
     }, [])
 
     useEffect(() => {
@@ -73,13 +95,15 @@ export const BrowseSamples = (props) => {
 
     useEffect(() => {
     if (randomSamplesLoaded && itemsLeftToShow.length > 0){
-            console.log(itemsLeftToShow[rSampleItem])
-            if (rSampleItem < itemsLeftToShow.length - 1) {
+            if (rSampleItem < itemsLeftToShow.length-1) {
                 let increment = rSampleItem + 1
                 setRSampleValue(increment)
-            } else {
-                setRSampleValue(0)
+            } 
+            else if(rSampleItem === 0 && itemsLeftToShow.length-1 === 0){
                 setZeroed(true)
+            }
+            else {
+                setRSampleValue(0)
             }
             setNoneLeft(false)
     }
@@ -87,9 +111,7 @@ export const BrowseSamples = (props) => {
         //data has been loaded from api, filtering done, no items left to show
         setNoneLeft(true)
     }
-    else {
-        
-    }
+    
     }, [itemsLeftToShow, randomSample, randomSamplesLoaded])
 
     useEffect(() => {
@@ -101,18 +123,17 @@ export const BrowseSamples = (props) => {
         if (randomSample.length > 0) {
             let randomSamplesThatHaveNotBeenFavorited = randomSample.filter(comparer(thisUserFavorites))
             let randomSamplesThatHaveNotBeenSkippedOrFavorited = randomSamplesThatHaveNotBeenFavorited.filter(comparer(thisUserSkipped))
-            console.log(randomSamplesThatHaveNotBeenSkippedOrFavorited)
             setitemsLeftToShow(randomSamplesThatHaveNotBeenSkippedOrFavorited)
             //Increment
         }
     }, [favorites, skipped, randomSample])
 
-    if (noneLeft !== true) {
+    if (noneLeft !== true && randomSamplesLoaded) {
         return (
-            <div>
-                <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
-                <img class="img" src={currentSample.sample_image}></img>
+            <div class="sampleContainer">
                 <div ref={waveformRef} />
+                <img class="img" src={currentSample.sample_image}></img>
+                <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
@@ -125,8 +146,11 @@ export const BrowseSamples = (props) => {
     }
     else {
         return (
-            <div class="sampleCard">
-                None Left
+            <div>
+                <div ref={waveformRef} />
+                You've checked out all the samples currently in our archive.<br></br>
+                Come back later this week and there's sure to be more! <br></br>
+                Right now you go ahead and <Link to={`/crushes`}>check out your crushes</Link>
             </div>
         )
     }

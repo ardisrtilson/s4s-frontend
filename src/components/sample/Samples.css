@@ -13,6 +13,11 @@
   background-size: cover;
 }
 
+.playerContainer{
+  border: 5px solid black;
+  margin-bottom: 2rem;
+}
+
 .button1 {
     display: block; text-align: 
     center; background: #FFF7D6; 
@@ -106,7 +111,7 @@
     height: 100%;
   }
   a:link, a:visited {
-    color:white;
+    color:rgb(255, 255, 255);
   }
 
   a:hover {
