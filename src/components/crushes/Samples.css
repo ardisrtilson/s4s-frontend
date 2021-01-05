@@ -193,13 +193,12 @@
   }
 
 .samples {
-    display: block;
-    flex-wrap: column;
+    display: flex;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
-    background-color: #9FADBD;
+    background-color: #FFFFFF;
     border: black solid 1px;
-    padding: 1rem;
     width: 90%;
     position: absolute;
     left: 3%;
@@ -283,6 +282,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .playerContainer{
+    border: 5px solid black;
+    margin-bottom: 2rem;
   }
 
   .filters{

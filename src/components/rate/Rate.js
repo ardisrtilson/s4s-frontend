@@ -12,6 +12,8 @@ import "react-colorful/dist/index.css";
 
 export const Rate = () => {
 
+    const waveformRef = useRef(null);
+
     const [rSampleItem, setRSampleValue] = useState(0)
     const [value, setValue] = useState(null)
     const [volume, setVolume] = useState(null)
@@ -21,9 +23,8 @@ export const Rate = () => {
     const [itemsLeftToShow, setitemsLeftToShow] = useState([])
     const [audio_url, setAudioURL] = useState('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
     const [color, setColor] = useState("#aabbcc")
+    const [wavesurfCreated, setWavesurfCreated] = useState(false)
     const [wavesurf, setWavesurf] = useState(false)
-
-    const waveformRef = useRef(null);
 
     const { favorites,
         getUsers,
@@ -39,18 +40,30 @@ export const Rate = () => {
     } = useContext(SampleContext)
 
     useEffect(() => {
-        if (waveformRef.current && wavesurfCreated === false){
-        let wavesurfer = WaveSurfer.create({ 
-          container: waveformRef.current,
-          cursorColor: "transparent",
-          backgroundColor: "black",
-          barWidth: 1,
-          fillParent:true
-        })
-        wavesurfer.load('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
-        wavesurfer.setWaveColor(color)
-      }
-    }, [color, currentSample])
+        if (waveformRef.current) {
+            setWavesurf(WaveSurfer.create({
+                container: waveformRef.current,
+                cursorColor: "transparent",
+                backgroundColor: "black",
+                barWidth: 1,
+                fillParent: true
+            }))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (wavesurf !== false) {
+            wavesurf.load(currentSample.audio_url)
+        }
+    }, [currentSample])
+
+    useEffect(() => {
+        console.log(waveformRef)
+        if (wavesurf !== false) {
+            wavesurf.setWaveColor(color)
+            setWavesurfCreated(true)
+        }
+    }, [color])
 
     function comparer(otherArray) {
         return function (current) {
@@ -62,39 +75,40 @@ export const Rate = () => {
 
     const addSampleRatings = () => {
         console.log(color)
-        if (volume !== null && value != null){
-        addRatings({
-            sample: currentSample.id,
-            color: color,
-            rating: value,
-            loudness: volume
-        })
+        if (volume !== null && value != null) {
+            addRatings({
+                sample: currentSample.id,
+                color: color,
+                rating: value,
+                loudness: volume
+            })
+        }
+        else {
+            if (volume === null && value !== null) { alert("Please drag the volume slider until the sound is just right") }
+            else if (value === null && volume !== null) { alert("Please rate the sample on a scale from 1-5 stars") }
+            else if (value === null && volume === null) { alert("Please rate the sample on a scale from 1-5 stars and drag the volume slider until the sound is just right") }
+        }
     }
-        else{
-            if (volume === null && value !== null) {alert("Please drag the volume slider until the sound is just right")}
-            else if (value === null && volume !== null) {alert("Please rate the sample on a scale from 1-5 stars")}
-            else if (value === null && volume === null){alert("Please rate the sample on a scale from 1-5 stars and drag the volume slider until the sound is just right")}
-    }}
-    
+
     useEffect(() => {
         getUsers().then(getSkipped).then(getFavorites).then(getRandomSample)
     }, [])
 
     useEffect(() => {
-        if (itemsLeftToShow.length > 0){
-        setCurrentSample(itemsLeftToShow[rSampleItem])
+        if (itemsLeftToShow.length > 0) {
+            setCurrentSample(itemsLeftToShow[rSampleItem])
         }
     }, [rSampleItem, zeroed])
 
     useEffect(() => {
-        if (currentSample !== {}){
-        setAudioURL(currentSample.audio_url)
+        if (currentSample !== {}) {
+            setAudioURL(currentSample.audio_url)
         }
     }, [currentSample])
 
 
     useEffect(() => {
-    if (randomSamplesLoaded && itemsLeftToShow.length > 0){
+        if (randomSamplesLoaded && itemsLeftToShow.length > 0) {
             if (rSampleItem < itemsLeftToShow.length - 1) {
                 let increment = rSampleItem + 1
                 setRSampleValue(increment)
@@ -103,26 +117,24 @@ export const Rate = () => {
                 setZeroed(true)
             }
             setNoneLeft(false)
-    }
-    else if (randomSamplesLoaded && itemsLeftToShow.length === 0) {
-        //data has been loaded from api, filtering done, no items left to show
-        setNoneLeft(true)
-    }
-    else {
-        
-    }
+        }
+        else if (randomSamplesLoaded && itemsLeftToShow.length === 0) {
+            //data has been loaded from api, filtering done, no items left to show
+            setNoneLeft(true)
+        }
+        else {
+
+        }
     }, [itemsLeftToShow, randomSample, randomSamplesLoaded])
 
     useEffect(() => {
 
         //Filtrationxs
         let currentUser = parseInt(localStorage.getItem("user_number"))
-        let thisUserFavorites = favorites.filter(faves => faves.user_id === currentUser)
         let thisUserSkipped = skipped.filter(skip => skip.user_id === currentUser)
         if (randomSample.length > 0) {
-            let randomSamplesThatHaveNotBeenFavorited = randomSample.filter(comparer(thisUserFavorites))
-            let randomSamplesThatHaveNotBeenSkippedOrFavorited = randomSamplesThatHaveNotBeenFavorited.filter(comparer(thisUserSkipped))
-            setitemsLeftToShow(randomSamplesThatHaveNotBeenSkippedOrFavorited)
+            let randomSamplesThatHaveNotBeenSkipped = randomSample.filter(comparer(thisUserSkipped))
+            setitemsLeftToShow(randomSamplesThatHaveNotBeenSkipped)
             //Increment
         }
     }, [randomSample, ratings])
@@ -130,23 +142,22 @@ export const Rate = () => {
     if (noneLeft !== true) {
         return (
             <>
-            <div class ="sampleContainer">
-            <img class="img" src={currentSample.sample_image}></img>
-            <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
-            <div ref={waveformRef} />
-                <Rating 
-                value={value}
-                onChange={(event, newValue) => {setValue(newValue)}}/>
-
-                <AudioPlayer
-                    autoPlayAfterSrcChange={false}
-                    src={currentSample.audio_url}
-                    onPlay={e => console.log("onPlay")}
-                    onVolumeChange={e => setVolume(e.target.volume)} />
+                <div class="sampleContainer">
+                    <img class="img" src={currentSample.sample_image}></img>
+                    <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
+                    <Rating
+                        value={value}
+                        onChange={(event, newValue) => { setValue(newValue) }} />
+                    <div ref={waveformRef} />
+                    <AudioPlayer
+                        autoPlayAfterSrcChange={false}
+                        src={currentSample.audio_url}
+                        onPlay={e => console.log("onPlay")}
+                        onVolumeChange={e => setVolume(e.target.volume)} />
                     <button class="button5" onClick={addSampleRatings}>Submit Ratings</button>
                     <button class="button2" onClick={getRatings}>Skip</button>
-                <HexColorPicker color={color} onChange={setColor} />
-            </div>
+                    <HexColorPicker color={color} onChange={setColor} />
+                </div>
             </>
         )
     }

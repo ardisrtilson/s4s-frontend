@@ -57,8 +57,7 @@ export const SampleForm = (props) => {
                         name: name.current.value,
                         uploader: localStorage.getItem("user_number"),
                         audio_url: url,
-                        date_added: "2020-7-7",
-                        sample_image: postImage.sample_image
+                        date_added: "2020-7-7"
                     })
                     .then(() => props.history.push("/"))
                 })

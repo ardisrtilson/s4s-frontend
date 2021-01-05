@@ -13,7 +13,6 @@ import Rating from '@material-ui/lab/Rating';
 import Button from '@material-ui/core/Button';
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 
-
 export const SampleDetails = (props) => {
 
   const [localState, setLocalState] = useState({})
@@ -55,7 +54,9 @@ const submitComment = () => {
         waveformRef.current = WaveSurfer.create({ 
           container: waveformRef.current,
           cursorColor: "transparent",
-          backgroundColor: "black"
+          backgroundColor: "black",
+          barWidth: 1,
+          fillParent: true
         });
         waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
         waveformRef.current.setWaveColor("red")

@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import WaveSurfer from "wavesurfer.js";
 import "./Browse.css"
 import 'react-h5-audio-player/lib/styles.css'
+import Rating from '@material-ui/lab/Rating';
 
 export const BrowseSamples = (props) => {
 
@@ -27,6 +28,8 @@ export const BrowseSamples = (props) => {
         addSkipped,
         getSkipped,
         randomSamplesLoaded,
+        getRatings,
+        ratings
     } = useContext(SampleContext)
 
     function comparer(otherArray) {
@@ -62,7 +65,7 @@ export const BrowseSamples = (props) => {
       }, [])
 
     useEffect(() => {
-        getUsers().then(getSkipped).then(getFavorites).then(getRandomSample)
+        getUsers().then(getSkipped).then(getFavorites).then(getRandomSample).then(getRatings)
     }, [])
 
     useEffect(() => {
@@ -109,9 +112,11 @@ export const BrowseSamples = (props) => {
     if (noneLeft !== true && randomSamplesLoaded) {
         return (
             <div>
-                <div ref={waveformRef} />
-                <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
                 <img class="img" src={currentSample.sample_image}></img>
+                <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
+                <Rating
+                        value={5}/>
+                <div ref={waveformRef} />
                 <AudioPlayer
                     autoPlayAfterSrcChange={false}
                     src={currentSample.audio_url}
