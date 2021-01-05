@@ -4,7 +4,7 @@ import Rating from '@material-ui/lab/Rating';
 import { SampleContext } from "../sample/SampleProvider"
 import AudioPlayer from 'react-h5-audio-player'
 import { Link } from "react-router-dom"
-import "./Browse.css"
+import "./Rate.css"
 import WaveSurfer from "wavesurfer.js";
 import 'react-h5-audio-player/lib/styles.css'
 import { HexColorPicker } from "react-colorful";
@@ -58,7 +58,6 @@ export const Rate = () => {
     }, [currentSample])
 
     useEffect(() => {
-        console.log(waveformRef)
         if (wavesurf !== false) {
             wavesurf.setWaveColor(color)
             setWavesurfCreated(true)
@@ -142,13 +141,13 @@ export const Rate = () => {
     if (noneLeft !== true) {
         return (
             <>
-                <div class="sampleContainer">
+            <div class="sampleContainer">
+            <div ref={waveformRef} />
                     <img class="img" src={currentSample.sample_image}></img>
                     <div class="link_card button4"><Link to={`/browse/${currentSample.id}`}>{currentSample.name}</Link></div>
                     <Rating
                         value={value}
                         onChange={(event, newValue) => { setValue(newValue) }} />
-                    <div ref={waveformRef} />
                     <AudioPlayer
                         autoPlayAfterSrcChange={false}
                         src={currentSample.audio_url}
@@ -164,7 +163,7 @@ export const Rate = () => {
     else {
         return (
             <div class="sampleCard">
-                None Left
+                <div ref={waveformRef} />
             </div>
         )
     }

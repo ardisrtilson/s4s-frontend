@@ -18,19 +18,25 @@ export const SampleList = ({ sample }) => {
 
   const {
     favorites,
-    releaseFavorite,
-    getFavorites,
-    filterValue,
     getUsers,
     getSamples,
     samples,
-    searchTerms,
     user,
     ratings,
     getRatings,
     getUserById,
     releaseSample
   } = useContext(SampleContext)
+
+  const delete_prompt = (id) => {
+    var retVal = window.confirm("Are you sure you want to delete your comment?");
+    if( retVal == true ) {
+        deleteSample(id)
+        return true;
+    } else {
+        return false;
+    }
+}
 
   useEffect(() => {
     getSamples()
@@ -80,8 +86,8 @@ export const SampleList = ({ sample }) => {
     setThisUserSamples(samples.filter(sample => sample.uploader === currentUser))
   }, [favorites, currentUser, samples])
 
-  const downloadFile = () => {
-    //   window.location.href = sample.audio_url
+  const downloadFile = (sample) => {
+      window.location.href = sample.audio_url
     console.log("")
   }
 
@@ -139,8 +145,8 @@ export const SampleList = ({ sample }) => {
                   volume={averageLoudness}
                   src={sample.audio_url}
                   onPlay={e => console.log("onPlay")} />
-                <button class="button5" onClick={() => deleteSample(sample.id)}>Delete Sample</button>
-                <button class="button3" onClick={downloadFile}>Download Sample</button>
+                <button class="button5" onClick={() => delete_prompt(sample.id)}>Delete Sample</button>
+                <button class="button3" onClick={()=>downloadFile(sample)}>Download Sample</button>
               </section>)
           })
         }

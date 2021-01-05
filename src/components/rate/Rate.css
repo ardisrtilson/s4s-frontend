@@ -95,7 +95,7 @@
     height: 100%;
   }
   a:link, a:visited {
-    color:white;
+    color:rgb(0, 0, 0);
   }
 
   a:hover {

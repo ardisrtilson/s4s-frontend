@@ -3,6 +3,7 @@ import React, { useState } from "react"
 export const SampleContext = React.createContext()
 
 export const SampleProvider = (props) => {
+
     const [commentValue, setComments] = useState([])
     const [users, setUsers] = useState([])
     const [randomSample, setRandomSample] = useState([])
@@ -203,44 +204,44 @@ export const SampleProvider = (props) => {
     return (
         <SampleContext.Provider value={
             {
-                addComment,
-                addFavorites,
-                addSample,
-                addSkipped,
                 commentValue,
                 users,
                 favorites, 
                 filterValue,
                 ratings,
-                getRatings,
+                randomSample,
+                singleSampleLoaded,
+                samples,
+                singleSample,
+                skipped,
+                searchTerms,
+                randomSamplesLoaded,
+                user,
+                addComment,
+                addFavorites,
+                addSample,
+                addSkipped,
                 addRatings,
+                getRatings,
                 getComments,
                 getUsers,
                 getFavorites,
                 getSamples, 
                 getSampleById,
                 getRandomSample,
-                randomSample,
+                getSkipped,
+                getUserById,
                 releaseSample, 
                 releaseComment,
                 releaseFavorite,
-                singleSampleLoaded,
-                samples,
-                singleSample,
-                skipped,
-                getSkipped,
                 setSkipped,
-                searchTerms,
                 setComments,
                 setFavorites, 
                 setFilter,
                 setRatings,
-                randomSamplesLoaded,
                 setTerms,
-                updateSample,
-                user,
                 setUser,
-                getUserById,
+                updateSample,
             }}>
         {props.children}
         </SampleContext.Provider>

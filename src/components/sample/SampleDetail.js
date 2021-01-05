@@ -16,6 +16,18 @@ import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
 export const SampleDetails = (props) => {
 
   const [localState, setLocalState] = useState({})
+  const [audio_url, setAudioURL] = useState('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
+  const [color, setColor] = useState("#aabbcc")
+
+  const delete_prompt = (id) => {
+    var retVal = window.confirm("Are you sure you want to delete your comment?");
+    if( retVal == true ) {
+        deleteComment(id)
+        return true;
+    } else {
+        return false;
+    }
+}
 
   const handleControlledInputChange = (e) => {
     const newComment = Object.assign({}, localState)
@@ -26,6 +38,7 @@ export const SampleDetails = (props) => {
 const deleteComment = (id) => {
   releaseComment(id)
   getComments()
+  getRatings()
 }
 
 const submitComment = () => {
@@ -36,6 +49,7 @@ const submitComment = () => {
     sample: props.match.params.sampleId
 })
   getComments()
+  setLocalState("")
 }
 
   const waveformRef = useRef(null);
@@ -47,7 +61,9 @@ const submitComment = () => {
         getComments,
         commentValue,
         addComment,
-        releaseComment
+        releaseComment,
+        getRatings,
+        ratings
     } = useContext(SampleContext)
 
     useEffect(() => {
@@ -58,15 +74,33 @@ const submitComment = () => {
           barWidth: 1,
           fillParent: true
         });
-        waveformRef.current.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3')
+        waveformRef.current.load(audio_url)
         waveformRef.current.setWaveColor("red")
       }, [])
+
+      useEffect(() => {
+        waveformRef.current.setWaveColor(color)
+      }, [color])
+
+      useEffect(() => {
+        if (audio_url !== undefined)
+        {
+          waveformRef.current.load(audio_url)
+        }
+      }, [audio_url])
 
     useEffect(() => {
         let sampleId = parseInt(props.match.params.sampleId)
         getUsers()
         getComments().then(res => setLocalState(res))
         getSampleById(sampleId)
+        let thisSampleRatings = ratings.filter(rating => rating.sample.id === parseInt(props.match.params.sampleId))
+        let averageColor = thisSampleRatings.reduce((total, next) => total + parseInt(next.color.substring(1), 16), 0) / thisSampleRatings.length;
+                      let averageColorHex = Math.round(averageColor).toString(16)
+                      averageColorHex = `#` + averageColorHex
+                      if(averageColorHex === "#NaN"){averageColorHex = '#ffffff'}
+                      setColor(averageColorHex)
+                      setAudioURL(singleSample.audio_url)
     }, [])
 
         return (
@@ -86,6 +120,7 @@ const submitComment = () => {
       <h1>Comments</h1>
       {
       commentValue.map(comment => {
+      if (comment.sample ===parseInt(props.match.params.sampleId)){
       return(
       <Paper style={{ padding: "40px 20px" }}>
         <Grid container wrap="nowrap" spacing={2}>
@@ -97,16 +132,18 @@ const submitComment = () => {
             <p style={{ textAlign: "left" }}>
               {comment.content}
             </p>
-            <Button onClick={() => {deleteComment(comment.id)}}>Delete Comment</Button>
+            <Button onClick={() => {delete_prompt(comment.id)}}>Delete Comment</Button>
             <p style={{ textAlign: "left", color: "gray" }}>
-              posted 1 minute ago
+              posted less than 1 minute ago
             </p>
           </Grid>
         </Grid>
         <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
       </Paper>
-      )}
       )
+      }}
+      )
+
       }
     </div>
             </>

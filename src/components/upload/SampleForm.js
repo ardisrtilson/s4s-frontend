@@ -41,6 +41,7 @@ export const SampleForm = (props) => {
     }
 
     const constructNewSample = () => {
+        if (file){
         let fileRef = firebase.storage().ref("Audio/" + file.name)    
         fileRef.put(file).then(() => {
             async function getURL(){
@@ -62,6 +63,8 @@ export const SampleForm = (props) => {
                     .then(() => props.history.push("/"))
                 })
             })
+        }
+        else {window.confirm("Sample is still loading. Try again in a moment.")}
 }
 
     return (

@@ -71,7 +71,7 @@ useEffect(() => {
   }
 }, [thisUserFavorites, samples])
 
-        const downloadFile = () => {
+        const downloadFile = (sample) => {
           window.location.href = sample.audio_url
         }
 
@@ -127,7 +127,7 @@ return (
                                       src={sample.audio_url}
                                       onPlay={e => console.log("onPlay")}/>
                                   <button class="button5" onClick={()=>removeFavorite(sample)}>Remove Favorite</button>
-                                  <button class="button3" onClick={downloadFile}>Download Sample</button>
+                                  <button class="button3" onClick={()=>downloadFile(sample)}>Download Sample</button>
                           </section>)
                     })
                   }
