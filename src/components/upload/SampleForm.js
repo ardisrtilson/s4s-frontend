@@ -2,26 +2,15 @@
 import React, { useContext, useRef, useState} from "react"
 import { SampleContext } from "../sample/SampleProvider"
 import "./Upload.css"
-import firebase from 'firebase'
-
-var firebaseConfig = {
-    apiKey: "AIzaSyBvcefxE55FTuGU_atOzBriWjYMjBTWSmI",
-    authDomain: "selektor-b0fc6.firebaseapp.com",
-    databaseURL: "https://selektor-b0fc6.firebaseio.com",
-    projectId: "selektor-b0fc6",
-    storageBucket: "selektor-b0fc6.appspot.com",
-    messagingSenderId: "575613031578",
-    appId: "1:575613031578:web:9fbbe8aea6fe7b30593b23",
-    measurementId: "G-17ZEH949SN"
-}
-firebase.initializeApp(firebaseConfig)
+import firebase from '../../firebase'
 
 export const SampleForm = (props) => {
     const [ postImage, setPostImage ] = useState("")
-    let file
     let db = firebase.firestore();
     let thingsRef = db.collection('Samples')
     let url
+    let file
+    let image
 
     const { addSample } = useContext(SampleContext)
     const name = useRef(null)
@@ -43,7 +32,9 @@ export const SampleForm = (props) => {
     const constructNewSample = () => {
         if (file){
         let fileRef = firebase.storage().ref("Audio/" + file.name)    
+        let imageRef = firebase.storage().ref("Images/" + image.name)   
         fileRef.put(file).then(() => {
+            imageRef.put(image).then(() => {
             async function getURL(){
             url = await fileRef.getDownloadURL()
             }
@@ -53,16 +44,16 @@ export const SampleForm = (props) => {
                         audio_url: url,
                         date_added: "2020-7-7", 
                         sample_image: postImage.sample_image
-                    })
+                    }).then(() => props.history.push("/"))
                     thingsRef.add({
                         name: name.current.value,
                         uploader: localStorage.getItem("user_number"),
                         audio_url: url,
                         date_added: "2020-7-7"
                     })
-                    .then(() => props.history.push("/"))
                 })
             })
+        })
         }
         else {window.confirm("Sample is still loading. Try again in a moment.")}
 }
@@ -79,7 +70,9 @@ export const SampleForm = (props) => {
                     <input type="text" id="sampleDescription" ref={description} required autoFocus className="form-control" placeholder="Enter Description Here" />
                 </div>
                 <div className="uploadButtons">
-                            <input type="file" id="post_image" onChange={(evt) => {createPostImageJSON(evt)}} />
+                            <input type="file" id="post_image" onChange={evt => {
+                    image = evt.target.files[0]
+                }}/>
                         </div>
                 <div className="upload-group">
             <input class="button3" type="file" id="fileButton" 

@@ -12,12 +12,15 @@ import TextField from '@material-ui/core/TextField';
 import Rating from '@material-ui/lab/Rating';
 import Button from '@material-ui/core/Button';
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
+import firebase from '../../firebase'
 
 export const SampleDetails = (props) => {
 
   const [localState, setLocalState] = useState({})
   const [audio_url, setAudioURL] = useState('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
   const [color, setColor] = useState("#aabbcc")
+  let db = firebase.firestore();
+  let thingsRef = db.collection('Comments')
 
   const delete_prompt = (id) => {
     var retVal = window.confirm("Are you sure you want to delete your comment?");
@@ -48,6 +51,12 @@ const submitComment = () => {
     date_added: "4",
     sample: props.match.params.sampleId
 })
+  thingsRef.add({
+    content: localState.content,
+    user: localStorage.getItem("user_number"),
+    date_added: "4",
+    sample: props.match.params.sampleId
+  })
   getComments()
   setLocalState("")
 }

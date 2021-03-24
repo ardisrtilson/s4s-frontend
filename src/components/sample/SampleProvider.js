@@ -1,7 +1,6 @@
 import React, { useState } from "react"
-
+import firebase from '../../firebase'
 export const SampleContext = React.createContext()
-
 export const SampleProvider = (props) => {
 
     const [commentValue, setComments] = useState([])
@@ -17,7 +16,9 @@ export const SampleProvider = (props) => {
     const [user, setUser] = useState({})
     const [randomSamplesLoaded, setRandomSamplesLoaded] = useState(false)
     const [singleSampleLoaded, setSingleSampleLoaded] = useState(false)
-
+    let db = firebase.firestore();
+    let thingsRef = db.collection('Comments')
+  
     const getUserById = (id) => {
         return fetch(`http://localhost:8000/users/${id}`, {
             headers:{
@@ -101,6 +102,18 @@ export const SampleProvider = (props) => {
             }})
             .then(res => res.json())
             .then(setComments)
+            .then(() => {
+            thingsRef.get().then((doc) => {
+                if (doc.exists) {
+                    console.log("Document data:", doc.data());
+                } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                }
+            }).catch((error) => {
+                console.log("Error getting document:", error);
+            });
+        })
     }
     const getUsers = () => {
         return fetch("http://localhost:8000/users", {
