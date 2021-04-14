@@ -1,13 +1,14 @@
-import { SampleContext } from "../sample/SampleProvider"
-import { Link } from "react-router-dom"
-import React, { useContext, useState, useEffect, useRef } from "react"
-import "./Samples.css"
+// react imports
+import React, { useContext, useState, useEffect } from "react";
+import { SampleContext } from "../sample/SampleProvider";
+import MenuItem from '@material-ui/core/MenuItem';
+import ReactColorSquare from "react-color-square";
+import AvgRating from '@material-ui/lab/Rating';
 import AudioPlayer from 'react-h5-audio-player';
 import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import AvgRating from '@material-ui/lab/Rating';
-import ReactColorSquare from "react-color-square";
+import { Link } from "react-router-dom";
 import hexSorter from 'hexsorter';
+import "./Samples.css";
 
 export const SampleList = ({ sample }) => {
 
@@ -46,6 +47,7 @@ export const SampleList = ({ sample }) => {
   }, [])
 
   useEffect(() => {
+
     if (sort === 1) {
       setThisUserSamples(thisUserSamples.sort((a, b) => (a.averageRating < b.averageRating) ? 1 : -1))
       getRatings()
@@ -62,6 +64,7 @@ export const SampleList = ({ sample }) => {
       setThisUserSamples(thisUserSamples.sort((a, b) => (a.name < b.name) ? 1 : -1))
       getRatings()
     }
+
     else if (sort === 5) {
       let hexArray = thisUserSamples.map(faveHex => (faveHex.averageColorHex))
       var mostSaturatedColor = hexSorter.sortColors(hexArray, 'mostSaturatedColor')
@@ -76,6 +79,7 @@ export const SampleList = ({ sample }) => {
       setThisUserSamples(sortedHex.sort((a, b) => (parseInt(a.averageColorHex.substring(1) > b.averageColorHex.substring(1)) ? 1 : -1)))
       getRatings()
     }
+
   }, [sort])
 
   const handleControlledInputChange = (e) => {

@@ -1,36 +1,24 @@
 // Organized
 import React, { useContext, useEffect, useState, useRef } from "react"
-import { SampleContext } from "../sample/SampleProvider"
-import AudioPlayer from 'react-h5-audio-player'
-import { Link } from "react-router-dom"
-import "./Samples.css"
-import WaveSurfer from "wavesurfer.js";
-import 'react-h5-audio-player/lib/styles.css'
-import { HexColorPicker } from "react-colorful";
-import "react-colorful/dist/index.css";
-import TextField from '@material-ui/core/TextField';
-import Rating from '@material-ui/lab/Rating';
-import Button from '@material-ui/core/Button';
 import { Divider, Avatar, Grid, Paper } from "@material-ui/core";
-import firebase from '../../firebase'
+import { SampleContext } from "../sample/SampleProvider";
+import TextField from '@material-ui/core/TextField';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+import Button from '@material-ui/core/Button';
+import { Link } from "react-router-dom";
+import WaveSurfer from "wavesurfer.js";
+import "react-colorful/dist/index.css";
+import firebase from '../../firebase';
+import "./Samples.css";
 
 export const SampleDetails = (props) => {
 
-  const [localState, setLocalState] = useState({})
   const [audio_url, setAudioURL] = useState('https://firebasestorage.googleapis.com/v0/b/selektor-b0fc6.appspot.com/o/Audio%2FKick.wav?alt=media&token=61384403-e6c8-4874-9062-1527d920dfe3')
+  const [localState, setLocalState] = useState({})
   const [color, setColor] = useState("#aabbcc")
-  let db = firebase.firestore();
   let thingsRef = db.collection('Comments')
-
-  const delete_prompt = (id) => {
-    var retVal = window.confirm("Are you sure you want to delete your comment?");
-    if( retVal == true ) {
-        deleteComment(id)
-        return true;
-    } else {
-        return false;
-    }
-}
+  let db = firebase.firestore();
 
   const handleControlledInputChange = (e) => {
     const newComment = Object.assign({}, localState)
@@ -38,42 +26,53 @@ export const SampleDetails = (props) => {
     setLocalState(newComment)
 }
 
-const deleteComment = (id) => {
-  releaseComment(id)
-  getComments()
-  getRatings()
-}
+  const delete_prompt = (id) => {
+    var retVal = window.confirm("Are you sure you want to delete your comment?");
+      if (retVal) {
+          deleteComment(id)
+          return true;
+      } else {
+          return false;
+      }
+  }
 
-const submitComment = () => {
-  addComment({
-    content: localState.content,
-    user: localStorage.getItem("user_number"),
-    date_added: "4",
-    sample: props.match.params.sampleId
-})
-  thingsRef.add({
-    content: localState.content,
-    user: localStorage.getItem("user_number"),
-    date_added: "4",
-    sample: props.match.params.sampleId
+
+  const deleteComment = (id) => {
+    releaseComment(id)
+    getComments()
+    getRatings()
+  }
+
+  const submitComment = () => {
+    addComment({
+      content: localState.content,
+      user: localStorage.getItem("user_number"),
+      date_added: "4",
+      sample: props.match.params.sampleId
   })
-  getComments()
-  setLocalState("")
-}
+    thingsRef.add({
+      content: localState.content,
+      user: localStorage.getItem("user_number"),
+      date_added: "4",
+      sample: props.match.params.sampleId
+    })
+    getComments()
+    setLocalState("")
+  }
 
   const waveformRef = useRef(null);
 
-    const {
-        getUsers,
-        singleSample,
-        getSampleById,
-        getComments,
-        commentValue,
-        addComment,
-        releaseComment,
-        getRatings,
-        ratings
-    } = useContext(SampleContext)
+  const {
+    releaseComment,
+    getSampleById,
+    singleSample,
+    commentValue,
+    getComments,
+    addComment,
+    getRatings,
+    getUsers,
+    ratings
+  } = useContext(SampleContext)
 
     useEffect(() => {
         waveformRef.current = WaveSurfer.create({ 
